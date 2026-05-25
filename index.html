@@ -260,6 +260,21 @@
         .category-pill { background: rgba(30, 20, 50, 0.5); border: 1px solid rgba(139, 92, 246, 0.4); border-radius: 40px; padding: 6px 16px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; color: #c4b5fd; display: inline-flex; align-items: center; gap: 8px; }
         .category-pill.active { background: linear-gradient(105deg, #7c3aed, #a855f7); color: white; border: none; }
         .task-category-badge { display: inline-flex; align-items: center; gap: 5px; background: rgba(124, 58, 237, 0.25); border-radius: 30px; padding: 2px 8px; font-size: 9px; margin-left: 8px; }
+        
+        /* Spotify button style */
+        .spotify-btn {
+            background: linear-gradient(105deg, #1DB954, #1aa34a);
+            padding: 8px 20px;
+            border-radius: 44px;
+            font-weight: 700;
+            text-decoration: none;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s;
+        }
+        .spotify-btn:hover { transform: scale(1.02); }
     </style>
 </head>
 <body>
@@ -273,7 +288,23 @@
 
 <!-- Main App -->
 <div id="mainApp" style="display:none;">
-    <header class="px-5 pt-5 pb-2 flex justify-between items-center flex-wrap gap-3"><div><h1 class="text-5xl font-black bg-gradient-to-r from-white via-purple-200 to-purple-400 bg-clip-text text-transparent">Focus</h1><p class="text-sm text-purple-300/70">grow with every minute</p></div><div class="flex gap-3 items-center"><div class="bg-purple-900/60 rounded-full px-4 py-1.5 flex gap-2"><span>🪙</span><span id="globalCoins">0</span></div><button id="logoutBtn" class="text-xs bg-purple-800/40 px-3 py-1.5 rounded-full">Logout</button></div></header>
+    <header class="px-5 pt-5 pb-2 flex justify-between items-center flex-wrap gap-3">
+        <div>
+            <h1 class="text-5xl font-black bg-gradient-to-r from-white via-purple-200 to-purple-400 bg-clip-text text-transparent">Focus</h1>
+            <p class="text-sm text-purple-300/70">grow with every minute</p>
+        </div>
+        <div class="flex gap-3 items-center">
+            <div class="bg-purple-900/60 rounded-full px-4 py-1.5 flex gap-2"><span>🪙</span><span id="globalCoins">0</span></div>
+            <!-- Spotify Button -->
+            <a href="https://mobutdio.github.io/mo-dio/" target="_blank" class="spotify-btn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.36-.66.48-1.02.24-2.82-1.74-6.36-2.1-10.56-1.14-.42.12-.84-.12-.96-.54-.12-.42.12-.84.54-.96 4.56-1.02 8.52-.66 11.64 1.26.36.18.48.66.24 1.02zm1.44-3.3c-.3.42-.78.6-1.2.3-3.24-1.98-8.16-2.58-11.94-1.38-.48.18-.96-.06-1.14-.48-.18-.48.06-.96.48-1.14 4.26-1.38 9.54-.72 13.2 1.5.42.24.6.78.36 1.2zm.12-3.48C15.84 8.4 8.4 8.16 4.56 9.6c-.6.24-1.2-.06-1.44-.6-.24-.6.06-1.2.6-1.44 4.44-1.68 12.48-1.44 16.98 1.32.54.36.72 1.08.36 1.62-.36.48-1.08.66-1.62.3z"/>
+                </svg>
+                Spotify
+            </a>
+            <button id="logoutBtn" class="text-xs bg-purple-800/40 px-3 py-1.5 rounded-full">Logout</button>
+        </div>
+    </header>
     <div class="max-w-7xl mx-auto px-4 pb-28">
         <div id="focusPage" class="page-section active">
             <div class="glass-panel p-5 mb-6"><h2 class="text-xl font-bold mb-3">📊 Dashboard</h2><div class="grid grid-cols-2 sm:grid-cols-4 gap-4"><div class="dashboard-stat"><div class="text-3xl font-black text-purple-300" id="dashTotalTrees">0</div><div class="text-xs">🌲 trees</div></div><div class="dashboard-stat"><div class="text-3xl font-black text-purple-300" id="dashTotalHours">0.0</div><div class="text-xs">⏱ hours</div></div><div class="dashboard-stat"><div class="text-3xl font-black text-purple-300" id="dashCompletedTasks">0</div><div class="text-xs">✅ completed</div></div><div class="dashboard-stat"><div class="text-3xl font-black text-amber-300" id="dashStreak">0</div><div class="text-xs">🔥 streak</div></div></div></div>
