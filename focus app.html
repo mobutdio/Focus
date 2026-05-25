@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Focus · Journey Companion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;600;700;800&family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAgaBQgkXzUsP_shPCxHEPsfI0feV3XCmk",
+            authDomain: "focus-app-12d4d.firebaseapp.com",
+            projectId: "focus-app-12d4d",
+            storageBucket: "focus-app-12d4d.firebasestorage.app",
+            messagingSenderId: "718351245611",
+            appId: "1:718351245611:web:3b97981092ef5a03a3e56e"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        window.auth = auth;
+        window.db = db;
+        window.signInWithEmailAndPassword = signInWithEmailAndPassword;
+        window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
+        window.signOut = signOut;
+        window.onAuthStateChanged = onAuthStateChanged;
+        window.doc = doc;
+        window.getDoc = getDoc;
+        window.setDoc = setDoc;
+    </script>
+    
+    <style>
+        * { font-family: 'Inter', 'Montserrat', sans-serif; -webkit-tap-highlight-color: transparent; }
+        body { background: radial-gradient(ellipse at 20% 30%, #0c0a2a, #05040e); min-height: 100vh; color: #ede9fe; }
+        
+        .glass-panel { background: rgba(15, 12, 35, 0.65); backdrop-filter: blur(14px); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 36px; }
+        .card-sleek { background: rgba(25, 20, 50, 0.7); backdrop-filter: blur(8px); border-radius: 28px; border: 1px solid rgba(167, 139, 250, 0.2); transition: all 0.2s; }
+        .btn-primary { background: linear-gradient(105deg, #7c3aed, #a855f7); padding: 12px 28px; border-radius: 44px; font-weight: 700; cursor: pointer; border: none; color: white; transition: transform 0.2s; }
+        .btn-primary:hover { transform: scale(1.02); }
+        .btn-secondary { background: rgba(124, 58, 237, 0.2); border: 1px solid rgba(139, 92, 246, 0.5); border-radius: 44px; padding: 8px 20px; font-weight: 500; cursor: pointer; color: #ddd6fe; }
+        .btn-danger { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 44px; padding: 8px 20px; font-weight: 500; cursor: pointer; color: #fca5a5; }
+        
+        .menu {
+            padding: 0.5rem;
+            background-color: rgba(15, 12, 35, 0.95);
+            backdrop-filter: blur(20px);
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            border-radius: 60px;
+            box-shadow: 0 10px 25px 0 rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(139, 92, 246, 0.5);
+            z-index: 120;
+            gap: 8px;
+        }
+        .link {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 70px;
+            height: 50px;
+            border-radius: 40px;
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+            transition: width 0.2s ease-in;
+            text-decoration: none;
+            color: #9b8ec2;
+            cursor: pointer;
+        }
+        .link:before {
+            position: absolute;
+            z-index: -1;
+            content: "";
+            display: block;
+            border-radius: 40px;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            transform: translateX(100%);
+            transition: transform 0.2s ease-in;
+            background-color: rgba(124, 58, 237, 0.3);
+        }
+        .link:hover, .link.active { width: 130px; color: #c4b5fd; }
+        .link:hover:before, .link.active:before { transform: translateX(0); }
+        .link:hover .link-title, .link.active .link-title { transform: translateX(0); opacity: 1; }
+        .link-icon { width: 28px; height: 28px; display: block; flex-shrink: 0; left: 21px; position: absolute; }
+        .link-icon svg { width: 24px; height: 24px; }
+        .link-title { transform: translateX(100%); transition: transform 0.2s ease-in; display: block; text-align: center; text-indent: 28px; width: 100%; font-size: 13px; font-weight: 600; white-space: nowrap; }
+        
+        .page-section { opacity: 0; transform: translateY(14px); transition: opacity 0.35s ease, transform 0.35s ease; display: none; }
+        .page-section.active { display: block; opacity: 1; transform: translateY(0); }
+        
+        .form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: linear-gradient(45deg, #1a1a3e, #0f0c29);
+            padding: 30px;
+            width: 450px;
+            max-width: 90%;
+            border-radius: 28px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        .inputForm {
+            border: 1.5px solid rgba(139, 92, 246, 0.5);
+            border-radius: 10em;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            padding-left: 15px;
+            background-color: rgba(30, 20, 60, 0.5);
+        }
+        .input { margin-left: 10px; background: transparent; border: none; width: 100%; color: white; outline: none; }
+        .button-submit {
+            background: linear-gradient(105deg, #7c3aed, #a855f7);
+            border: none;
+            border-radius: 10em;
+            padding: 15px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .span { color: #c084fc; cursor: pointer; }
+        
+        .forest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 16px; }
+        .forest-card { background: linear-gradient(145deg, rgba(35, 25, 70, 0.8), rgba(20, 15, 45, 0.9)); border-radius: 20px; padding: 12px; text-align: center; transition: transform 0.2s; border: 1px solid rgba(139, 92, 246, 0.3); }
+        .forest-card:hover { transform: translateY(-4px); }
+        
+        .toast-modern { position: fixed; top: 24px; right: 20px; background: #1a173ecc; backdrop-filter: blur(12px); border-radius: 40px; padding: 12px 24px; border-left: 5px solid #c084fc; z-index: 400; transform: translateX(150%); transition: transform 0.3s; }
+        .toast-modern.show { transform: translateX(0); }
+        .celebration-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(145deg, #2a235a, #1a1540); border-radius: 48px; padding: 24px 32px; text-align: center; z-index: 500; border: 2px solid #fbbf24; animation: popIn 0.4s ease-out; }
+        @keyframes popIn { 0% { transform: translate(-50%, -50%) scale(0); } 100% { transform: translate(-50%, -50%) scale(1); } }
+        
+        .dashboard-stat { background: rgba(0,0,0,0.3); border-radius: 24px; padding: 12px; text-align: center; backdrop-filter: blur(4px); }
+        
+        .timer-wrapper { display: flex; justify-content: center; align-items: center; margin: 0 auto 15px; }
+        .circular-timer { position: relative; display: flex; align-items: center; justify-content: center; width: 260px; height: 260px; border-radius: 50%; background: rgba(20, 15, 45, 0.6); box-shadow: 0 0 0 6px rgba(139, 92, 246, 0.2), inset 12px 12px 24px rgba(0,0,0,0.2), 12px 12px 24px rgba(0,0,0,0.2); }
+        .circular-timer-inner { position: relative; width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(10, 8, 25, 0.5); backdrop-filter: blur(4px); font-family: 'Montserrat', 'Inter', monospace; font-weight: 800; font-size: 2.8rem; color: white; text-shadow: 4px 4px 12px rgba(0,0,0,0.3); letter-spacing: 2px; }
+        .timer-digits { z-index: 10; }
+        .timer-svg-ring { position: absolute; top: 0; left: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+        .timer-svg-ring circle { fill: none; stroke: url(#gradientStroke); stroke-width: 8; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.6)); transition: stroke-dashoffset 0.2s linear; }
+        .timer-bg-circle { fill: none; stroke: rgba(139, 92, 246, 0.25); stroke-width: 8; }
+        .timer-status-text { font-size: 0.7rem; margin-top: 8px; letter-spacing: 1px; font-weight: 600; background: rgba(0,0,0,0.4); display: inline-block; padding: 4px 12px; border-radius: 40px; }
+        @media (max-width: 640px) { .circular-timer { width: 220px; height: 220px; } .circular-timer-inner { font-size: 2.2rem; } }
+        
+        /* ===== WIDGET 1: COFFEE CUP ===== */
+        .coffee-cup { position: relative; width: 100px; height: 120px; margin: 0 auto; }
+        .cup-body { position: relative; width: 80px; height: 80px; background: #2c1a0e; border-radius: 0 0 30px 30px; margin: 0 auto; overflow: hidden; border: 3px solid #d4a373; border-top: none; }
+        .cup-handle { position: absolute; right: -18px; top: 15px; width: 20px; height: 40px; border: 4px solid #d4a373; border-radius: 0 20px 20px 0; border-left: none; }
+        .coffee-liquid { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(135deg, #6f4e37, #3e2723); transition: height 0.3s ease-out; border-radius: 0 0 27px 27px; }
+        .steam { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 50px; height: 20px; background: radial-gradient(circle, rgba(255,255,255,0.4), transparent); filter: blur(4px); opacity: 0; transition: opacity 0.3s; }
+        .cup-label { font-size: 10px; text-align: center; margin-top: 6px; color: #d4a373; }
+        
+        /* ===== WIDGET 2: BOOKSHELF ===== */
+        .bookshelf { width: 240px; margin: 0 auto; background: #5d4037; border-radius: 8px 8px 0 0; padding: 10px; }
+        .bookshelf-shelf { background: #4e342e; height: 5px; width: 100%; margin: 8px 0; border-radius: 2px; }
+        .books-container { display: flex; flex-wrap: wrap; gap: 5px; min-height: 80px; align-items: flex-end; justify-content: center; }
+        .book { width: 24px; height: 0; background: linear-gradient(135deg, #e53935, #c62828); border-radius: 3px 5px 5px 3px; transition: height 0.3s ease-out; }
+        .book:nth-child(even) { background: linear-gradient(135deg, #1e88e5, #1565c0); }
+        .book:nth-child(3n) { background: linear-gradient(135deg, #43a047, #2e7d32); }
+        .shelf-label { font-size: 10px; text-align: center; margin-top: 6px; color: #d4a373; }
+        
+        /* ===== WIDGET 3: BATTERY (STANDING VERTICAL) ===== */
+        .battery { width: 70px; margin: 0 auto; position: relative; }
+        .battery-body { width: 50px; height: 90px; background: #1a1a2e; border: 3px solid #4a4a6a; border-radius: 12px 12px 8px 8px; position: relative; overflow: hidden; }
+        .battery-cap { position: absolute; top: -12px; left: 12px; width: 22px; height: 12px; background: #4a4a6a; border-radius: 4px 4px 0 0; }
+        .battery-level { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(135deg, #4caf50, #2e7d32); transition: height 0.3s ease-out; border-radius: 0 0 6px 6px; }
+        .battery-label { font-size: 10px; text-align: center; margin-top: 12px; color: #a5d6a7; font-weight: bold; }
+        
+        /* ===== WIDGET 4: THERMOMETER ===== */
+        .thermometer { width: 60px; margin: 0 auto; position: relative; }
+        .thermometer-bulb { width: 36px; height: 36px; background: #c0c0c0; border-radius: 50%; margin: 0 auto; position: relative; z-index: 1; border: 2px solid #888; }
+        .thermometer-stem { width: 18px; height: 90px; background: #e0e0e0; margin: -8px auto 0; border-radius: 15px 15px 5px 5px; position: relative; overflow: hidden; border: 2px solid #aaa; }
+        .mercury { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(135deg, #ef4444, #dc2626); transition: height 0.3s ease-out; border-radius: 0 0 10px 10px; }
+        .thermometer-label { font-size: 10px; text-align: center; margin-top: 8px; color: #fca5a5; font-weight: bold; }
+        
+        /* ===== WIDGET 5: SLEEPING CAT ===== */
+        .sleeping-cat { width: 140px; margin: 0 auto; text-align: center; position: relative; }
+        .cat-body { width: 80px; height: 40px; background: #f59e0b; border-radius: 40px 40px 30px 30px; margin: 0 auto; position: relative; transition: all 0.3s ease; }
+        .cat-head { width: 45px; height: 35px; background: #f59e0b; border-radius: 50%; position: absolute; left: -15px; top: -10px; }
+        .cat-ear { width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-bottom: 20px solid #f59e0b; position: absolute; top: -12px; left: 5px; }
+        .cat-ear-right { left: 25px; }
+        .cat-eye { width: 6px; height: 6px; background: #1a1a1a; border-radius: 50%; position: absolute; top: 12px; left: 10px; transition: all 0.3s; }
+        .cat-eye-right { left: 28px; }
+        .cat-nose { width: 8px; height: 6px; background: #e5989b; border-radius: 50%; position: absolute; top: 20px; left: 18px; }
+        .cat-whisker { position: absolute; top: 20px; left: -8px; width: 20px; height: 1px; background: #fff; transform: rotate(-10deg); }
+        .cat-whisker-right { left: auto; right: -8px; transform: rotate(10deg); }
+        .cat-tail { width: 30px; height: 8px; background: #f59e0b; border-radius: 10px; position: absolute; right: -25px; top: 15px; transition: transform 0.3s; }
+        .zzz { position: absolute; top: -25px; right: 10px; font-size: 14px; font-weight: bold; color: #fff; opacity: 0.7; animation: floatZ 1.5s infinite; }
+        @keyframes floatZ { 0%, 100% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(-8px); opacity: 1; } }
+        .cat-label { font-size: 10px; text-align: center; margin-top: 8px; color: #fcd34d; }
+        
+        /* ===== WIDGET 6: CACTUS ===== */
+        .cactus { width: 80px; margin: 0 auto; text-align: center; position: relative; }
+        .cactus-pot { width: 50px; height: 30px; background: #8b5a2b; border-radius: 5px 5px 15px 15px; margin: 0 auto; border-top: 3px solid #a0522d; }
+        .cactus-plant { position: relative; width: 40px; height: 0; background: linear-gradient(135deg, #4caf50, #2e7d32); border-radius: 20px 20px 5px 5px; margin: 0 auto; transition: height 0.3s ease-out; overflow: hidden; }
+        .cactus-arm { position: absolute; width: 18px; height: 0; background: #4caf50; border-radius: 10px; transition: height 0.3s ease-out 0.1s; }
+        .cactus-arm-left { left: -16px; top: 40%; transform: rotate(-20deg); }
+        .cactus-arm-right { right: -16px; top: 60%; transform: rotate(20deg); }
+        .cactus-flower { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 12px; height: 12px; background: #f43f5e; border-radius: 50%; opacity: 0; transition: opacity 0.3s; box-shadow: 0 0 5px #f43f5e; }
+        .cactus-label { font-size: 10px; text-align: center; margin-top: 8px; color: #86efac; }
+        
+        .widget-selector { display: flex; gap: 6px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
+        .widget-btn { background: rgba(124, 58, 237, 0.2); border: 1px solid rgba(139, 92, 246, 0.5); border-radius: 40px; padding: 4px 10px; font-size: 11px; cursor: pointer; transition: all 0.2s; }
+        .widget-btn.active { background: linear-gradient(105deg, #7c3aed, #a855f7); color: white; border: none; }
+        .widget-container { min-height: 200px; display: flex; align-items: center; justify-content: center; }
+        
+        .checkbox-container { margin-bottom: 12px; width: 100%; }
+        .task-checkbox { display: none; }
+        .checkbox-label { display: flex; align-items: center; gap: 12px; cursor: pointer; background: rgba(30, 20, 50, 0.4); padding: 10px 12px; border-radius: 16px; transition: all 0.2s ease; width: 100%; }
+        .checkbox-label:hover { background: rgba(124, 58, 237, 0.2); transform: translateX(3px); }
+        .checkbox-box { position: relative; width: 24px; height: 24px; background: rgba(255, 255, 255, 0.1); border: 2px solid rgba(167, 139, 250, 0.5); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .checkbox-fill { position: absolute; width: 100%; height: 100%; background: linear-gradient(135deg, #a855f7, #7c3aed); border-radius: 6px; transform: scale(0); transition: transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .checkmark { position: relative; z-index: 2; opacity: 0; transform: scale(0); transition: all 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+        .check-icon { width: 14px; height: 14px; fill: white; }
+        .checkbox-text { font-size: 0.85rem; color: #ddd6fe; font-weight: 500; word-break: break-word; flex: 1; }
+        .task-checkbox:checked + .checkbox-label .checkbox-box { border-color: #a855f7; }
+        .task-checkbox:checked + .checkbox-label .checkbox-fill { transform: scale(1); }
+        .task-checkbox:checked + .checkbox-label .checkmark { opacity: 1; transform: scale(1); }
+        .task-checkbox:checked + .checkbox-label .checkbox-text { text-decoration: line-through; opacity: 0.6; }
+        .delete-task-btn { background: rgba(239, 68, 68, 0.2); border: none; border-radius: 30px; padding: 4px 10px; font-size: 11px; cursor: pointer; color: #fca5a5; transition: all 0.2s; margin-left: 8px; flex-shrink: 0; }
+        .delete-task-btn:hover { background: rgba(239, 68, 68, 0.5); }
+        
+        .auto-move-section { background: rgba(168, 85, 247, 0.15); border-radius: 16px; padding: 8px; margin-top: 12px; border: 1px dashed rgba(168, 85, 247, 0.4); }
+        .analytics-card { background: rgba(25, 20, 50, 0.7); backdrop-filter: blur(8px); border-radius: 24px; border: 1px solid rgba(167, 139, 250, 0.2); padding: 16px; margin-bottom: 20px; }
+        .donut-legend-container { display: flex; align-items: center; justify-content: space-around; flex-wrap: wrap; gap: 15px; }
+        .donut-wrapper { flex: 1; min-width: 140px; max-width: 180px; }
+        .legend-wrapper { flex: 1; min-width: 120px; }
+        .legend-item { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
+        .legend-color { width: 12px; height: 12px; border-radius: 50%; }
+        .legend-text { font-size: 11px; color: #c4b5fd; }
+        .legend-percent { font-size: 11px; color: #a855f7; font-weight: bold; margin-left: auto; }
+        .made-by-divider { text-align: center; padding: 8px 0; margin: 5px 0; }
+        .made-by-text { font-size: 10px; letter-spacing: 2px; color: rgba(168, 85, 247, 0.5); background: rgba(25, 20, 50, 0.5); display: inline-block; padding: 5px 15px; border-radius: 40px; }
+        #taskDonutChart { max-height: 110px !important; width: 100% !important; }
+        #focusChartLine { max-height: 120px !important; width: 100% !important; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #1a0f2e; }
+        ::-webkit-scrollbar-thumb { background: #a855f7; border-radius: 4px; }
+        
+        /* Roast popup style - clean, no emojis */
+        .roast-popup { background: linear-gradient(145deg, #5c1a1a, #3a0a0a); border: 2px solid #ff5555; border-radius: 32px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .roast-popup h3 { font-size: 2.5rem; font-weight: 900; letter-spacing: 2px; margin-bottom: 12px; font-family: 'Montserrat', monospace; }
+        .roast-popup p { font-size: 0.9rem; opacity: 0.9; }
+        
+        .category-pills { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; margin-bottom: 12px; }
+        .category-pill { background: rgba(30, 20, 50, 0.5); border: 1px solid rgba(139, 92, 246, 0.4); border-radius: 40px; padding: 6px 16px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; color: #c4b5fd; display: inline-flex; align-items: center; gap: 8px; }
+        .category-pill.active { background: linear-gradient(105deg, #7c3aed, #a855f7); color: white; border: none; }
+        .task-category-badge { display: inline-flex; align-items: center; gap: 5px; background: rgba(124, 58, 237, 0.25); border-radius: 30px; padding: 2px 8px; font-size: 9px; margin-left: 8px; }
+    </style>
+</head>
+<body>
+
+<div id="toastMsg" class="toast-modern"></div>
+
+<!-- Auth Overlay -->
+<div id="authOverlay" class="fixed inset-0 bg-gradient-to-br from-[#0f0c29] to-[#1a1a3e] z-[1000] flex items-center justify-center p-4">
+    <div class="form"><div id="loginFields"><div><label class="text-white font-semibold">Email</label></div><div class="inputForm"><input id="loginEmail" placeholder="Email" class="input" type="text" /></div><div><label class="text-white font-semibold">Password</label></div><div class="inputForm"><input id="loginPassword" placeholder="Password" class="input" type="password" /></div><button id="doLoginBtn" class="button-submit mt-3">Sign In</button><p class="text-center text-white text-sm mt-2">Don't have an account? <span id="showSignupBtn" class="span">Sign Up</span></p></div><div id="signupFields" style="display:none;"><div><label class="text-white font-semibold">Email</label></div><div class="inputForm"><input id="signupEmail" placeholder="Email" class="input" type="text" /></div><div><label class="text-white font-semibold">Password</label></div><div class="inputForm"><input id="signupPassword" placeholder="Password" class="input" type="password" /></div><button id="doSignupBtn" class="button-submit mt-3">Create Account</button><p class="text-center text-white text-sm mt-2">Already have an account? <span id="showLoginBtn" class="span">Sign In</span></p></div></div>
+</div>
+
+<!-- Main App -->
+<div id="mainApp" style="display:none;">
+    <header class="px-5 pt-5 pb-2 flex justify-between items-center flex-wrap gap-3"><div><h1 class="text-5xl font-black bg-gradient-to-r from-white via-purple-200 to-purple-400 bg-clip-text text-transparent">Focus</h1><p class="text-sm text-purple-300/70">grow with every minute</p></div><div class="flex gap-3 items-center"><div class="bg-purple-900/60 rounded-full px-4 py-1.5 flex gap-2"><span>🪙</span><span id="globalCoins">0</span></div><button id="logoutBtn" class="text-xs bg-purple-800/40 px-3 py-1.5 rounded-full">Logout</button></div></header>
+    <div class="max-w-7xl mx-auto px-4 pb-28">
+        <div id="focusPage" class="page-section active">
+            <div class="glass-panel p-5 mb-6"><h2 class="text-xl font-bold mb-3">📊 Dashboard</h2><div class="grid grid-cols-2 sm:grid-cols-4 gap-4"><div class="dashboard-stat"><div class="text-3xl font-black text-purple-300" id="dashTotalTrees">0</div><div class="text-xs">🌲 trees</div></div><div class="dashboard-stat"><div class="text-3xl font-black text-purple-300" id="dashTotalHours">0.0</div><div class="text-xs">⏱ hours</div></div><div class="dashboard-stat"><div class="text-3xl font-black text-purple-300" id="dashCompletedTasks">0</div><div class="text-xs">✅ completed</div></div><div class="dashboard-stat"><div class="text-3xl font-black text-amber-300" id="dashStreak">0</div><div class="text-xs">🔥 streak</div></div></div></div>
+            <div class="grid lg:grid-cols-2 gap-6">
+                <div><div class="card-sleek p-5 text-center mb-5"><h3 class="text-xl font-bold mb-2">⏳ Focus Timer</h3><div class="timer-wrapper"><div class="circular-timer"><svg class="timer-svg-ring" width="100%" height="100%" viewBox="0 0 260 260"><defs><linearGradient id="gradientStroke" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#c084fc" /><stop offset="100%" stop-color="#a855f7" /></linearGradient></defs><circle cx="130" cy="130" r="118" class="timer-bg-circle"></circle><circle id="timerRingModern" cx="130" cy="130" r="118" stroke="url(#gradientStroke)" stroke-width="7" fill="none" stroke-linecap="round" stroke-dasharray="741.4" stroke-dashoffset="0"></circle></svg><div class="circular-timer-inner"><span id="modernTimerDisplay" class="timer-digits">25:00</span></div></div></div><span id="timerStatusModern" class="timer-status-text">● Ready</span><div class="flex gap-2 justify-center mt-3"><input type="number" id="hoursInput" class="w-16 bg-purple-950/60 border border-purple-500/40 rounded-xl text-center p-2" value="0" min="0" placeholder="H"><span class="text-2xl">:</span><input type="number" id="minutesInput" class="w-16 bg-purple-950/60 border border-purple-500/40 rounded-xl text-center p-2" value="25" min="0" max="59"><button id="setTimerBtn" class="btn-secondary text-sm px-3">Set</button></div><div class="flex gap-3 justify-center mt-4"><button id="startFocusBtn" class="btn-primary">🌿 Start Focus</button><button id="pauseFocusBtn" class="btn-secondary hidden">⏸ Pause</button><button id="abortFocusBtn" class="btn-danger hidden">✖ Abort</button></div></div>
+                <div class="card-sleek p-4"><div class="widget-selector"><button class="widget-btn" data-widget="coffee">☕ Coffee</button><button class="widget-btn" data-widget="bookshelf">📚 Books</button><button class="widget-btn" data-widget="battery">🔋 Battery</button><button class="widget-btn" data-widget="thermometer">🌡️ Thermo</button><button class="widget-btn" data-widget="cat">😺 Cat</button><button class="widget-btn active" data-widget="cactus">🌵 Cactus</button></div><div class="widget-container" id="widgetContainer">
+                        <div id="coffeeWidget" class="coffee-cup" style="display:none;"><div class="cup-body"><div class="coffee-liquid" id="coffeeLiquid" style="height:0%"></div></div><div class="cup-handle"></div><div class="steam" id="coffeeSteam"></div><div class="cup-label" id="coffeeLabel">Empty</div></div>
+                        <div id="bookshelfWidget" class="bookshelf" style="display:none;"><div class="books-container" id="booksContainer"></div><div class="bookshelf-shelf"></div><div class="shelf-label" id="shelfLabel">0 books</div></div>
+                        <div id="batteryWidget" class="battery" style="display:none;"><div class="battery-body"><div class="battery-level" id="batteryLevel" style="height:0%"></div></div><div class="battery-cap"></div><div class="battery-label" id="batteryLabel">0%</div></div>
+                        <div id="thermometerWidget" class="thermometer" style="display:none;"><div class="thermometer-stem"><div class="mercury" id="mercuryFill" style="height:0%"></div></div><div class="thermometer-bulb"></div><div class="thermometer-label" id="thermometerLabel">0°C</div></div>
+                        <div id="catWidget" class="sleeping-cat" style="display:none;"><div class="cat-body"><div class="cat-head"><div class="cat-ear"></div><div class="cat-ear cat-ear-right"></div><div class="cat-eye" id="catEye"></div><div class="cat-eye cat-eye-right" id="catEyeRight"></div><div class="cat-nose"></div><div class="cat-whisker"></div><div class="cat-whisker cat-whisker-right"></div></div><div class="cat-tail" id="catTail"></div></div><div class="zzz" id="zzzText">💤</div><div class="cat-label" id="catLabel">💤 Sleeping</div></div>
+                        <div id="cactusWidget" class="cactus"><div class="cactus-plant" id="cactusPlant" style="height:0px"><div class="cactus-arm cactus-arm-left" id="cactusArmLeft" style="height:0px"></div><div class="cactus-arm cactus-arm-right" id="cactusArmRight" style="height:0px"></div><div class="cactus-flower" id="cactusFlower"></div></div><div class="cactus-pot"></div><div class="cactus-label" id="cactusLabel">🌱 Seedling</div></div>
+                    </div></div></div>
+                <div><div class="card-sleek p-5 mb-5"><div class="flex justify-between items-center mb-3"><h3 class="text-xl font-bold">📋 Current Tasks</h3><button onclick="switchPage('taskCenter')" class="text-purple-400 text-sm">Full view →</button></div><input type="text" id="quickTaskInput" placeholder="Write a task..." class="w-full bg-purple-950/40 border border-purple-500/40 rounded-2xl px-4 py-2"><div class="category-pills" id="quickCategoryPills"><div class="category-pill" data-cat="work">💼 Work</div><div class="category-pill" data-cat="study">📚 Study</div><div class="category-pill" data-cat="health">💪 Health</div><div class="category-pill" data-cat="personal">🎯 Personal</div></div><button id="addQuickTaskBtn" class="btn-secondary text-sm w-full mt-2">+ Add Task</button><div class="auto-move-section"><p class="text-xs text-purple-300">⏰ Unfinished tasks move after 24h</p></div><div class="mt-4 space-y-2 max-h-64 overflow-y-auto" id="compactTaskList"></div><div class="mt-3 text-xs text-purple-400"><span id="taskProgress">0/0 completed</span><div class="w-full h-1 bg-purple-900/50 rounded-full mt-1"><div id="progressFill" class="h-full bg-purple-500 w-0 rounded-full"></div></div></div></div>
+                <div class="card-sleek p-5 mb-5"><h3 class="text-xl font-bold mb-3">✅ Completed</h3><div id="completedTasksListSmall" class="space-y-2 max-h-48 overflow-y-auto"></div></div>
+                <div class="card-sleek p-5"><h3 class="text-xl font-bold mb-3">⚠️ Unfinished</h3><div id="unfinishedTasksList" class="space-y-2 max-h-48 overflow-y-auto"></div></div></div>
+            </div></div>
+        <div id="taskCenterPage" class="page-section"><div class="card-sleek p-6"><h2 class="text-2xl font-bold mb-4">🗂️ Task Manager</h2><div class="flex flex-wrap gap-3 mb-5"><input type="text" id="fullTaskInput" placeholder="New task..." class="flex-1 bg-purple-950/40 border border-purple-500/40 rounded-2xl px-4 py-2"><div class="category-pills" id="fullCategoryPills"><div class="category-pill" data-cat="work">💼 Work</div><div class="category-pill" data-cat="study">📚 Study</div><div class="category-pill" data-cat="health">💪 Health</div><div class="category-pill" data-cat="personal">🎯 Personal</div></div><button id="addFullTaskBtn" class="btn-primary">➕ Add</button></div><div class="grid md:grid-cols-3 gap-5"><div class="bg-black/20 p-3 rounded-2xl"><h3 class="font-bold text-purple-300 mb-2">📌 Current</h3><div id="pendingTasksList" class="space-y-2 max-h-80 overflow-y-auto"></div></div><div class="bg-black/20 p-3 rounded-2xl"><h3 class="font-bold text-green-400 mb-2">✅ Completed</h3><div id="completedTasksList" class="space-y-2 max-h-80 overflow-y-auto"></div></div><div class="bg-black/20 p-3 rounded-2xl"><h3 class="font-bold text-orange-400 mb-2">⚠️ Unfinished</h3><div id="unfinishedTasksFullList" class="space-y-2 max-h-80 overflow-y-auto"></div></div></div></div></div>
+        <div id="forestPage" class="page-section"><div class="card-sleek p-5"><h2 class="text-2xl font-bold mb-4">🌳 Forest</h2><div id="forestGrid" class="forest-grid"></div><div id="forestStats" class="mt-4 text-center text-purple-300 text-sm"></div></div></div>
+        <div id="analysisPage" class="page-section"><div class="analytics-card"><h2 class="text-xl font-bold mb-3">📈 Task Distribution</h2><div class="donut-legend-container"><div class="donut-wrapper"><canvas id="taskDonutChart"></canvas></div><div class="legend-wrapper"><div class="legend-item"><div class="legend-color" style="background:#a855f7"></div><span class="legend-text">Completed</span><span class="legend-percent" id="legendCompleted">0%</span></div><div class="legend-item"><div class="legend-color" style="background:#7c3aed"></div><span class="legend-text">Current</span><span class="legend-percent" id="legendCurrent">0%</span></div><div class="legend-item"><div class="legend-color" style="background:#f97316"></div><span class="legend-text">Unfinished</span><span class="legend-percent" id="legendUnfinished">0%</span></div></div></div><div id="taskStatsText" class="text-center text-xs text-purple-400 mt-2"></div></div><div class="made-by-divider"><span class="made-by-text">✦ M A D E  B Y  D I O ✦</span></div><div class="analytics-card"><h2 class="text-xl font-bold mb-3">📊 Focus Trends</h2><canvas id="focusChartLine"></canvas><div id="insightsBlock" class="mt-3 p-3 bg-purple-900/30 rounded-2xl text-center text-xs"></div></div></div>
+    </div>
+    <div class="menu"><a class="link active" data-page="focus"><span class="link-icon"><svg viewBox="0 0 256 256"><path d="M213.3815,109.61945,133.376,36.88436a8,8,0,0,0-10.76339.00036l-79.9945,72.73477A8,8,0,0,0,40,115.53855V208a8,8,0,0,0,8,8H208a8,8,0,0,0,8-8V115.53887A8,8,0,0,0,213.3815,109.61945Z" fill="none" stroke="currentColor" stroke-width="16"/></svg></span><span class="link-title">Focus</span></a><a class="link" data-page="taskCenter"><span class="link-icon"><svg viewBox="0 0 256 256"><polyline points="76.201 132.201 152.201 40.201 216 40 215.799 103.799 123.799 179.799" fill="none" stroke="currentColor" stroke-width="16"/><line x1="100" y1="156" x2="160" y2="96" stroke="currentColor" stroke-width="16"/></svg></span><span class="link-title">Tasks</span></a><a class="link" data-page="forest"><span class="link-icon"><svg viewBox="0 0 256 256"><circle cx="128" cy="96" r="64" fill="none" stroke="currentColor" stroke-width="16"/><path d="M30.989,215.99064a112.03731,112.03731,0,0,1,194.02311.002" fill="none" stroke="currentColor" stroke-width="16"/></svg></span><span class="link-title">Forest</span></a><a class="link" data-page="analysis"><span class="link-icon"><svg viewBox="0 0 256 256"><circle cx="116" cy="116" r="84" fill="none" stroke="currentColor" stroke-width="16"/><line x1="175.39356" y1="175.40039" x2="223.99414" y2="224.00098" stroke="currentColor" stroke-width="16"/></svg></span><span class="link-title">Growth</span></a></div>
+</div>
+
+<script type="module">
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    
+    const auth = getAuth(); const db = getFirestore();
+    let currentUser = null, forest = [], tasks = [], unfinished = [], coins = 0;
+    let timerSeconds = 0, timerTotal = 25 * 60, timerInterval = null, isRunning = false;
+    let currentWidget = "cactus", selectedQuickCategory = "", selectedFullCategory = "";
+    let taskDonutChart = null, lineChart = null;
+    const ringCircumference = 2 * Math.PI * 118;
+    const roastMessages = ["كسمك", "يلا يخول", "شوف شوف القحبة"];
+    
+    function showRoastPopup() { 
+        const randomRoast = roastMessages[Math.floor(Math.random() * roastMessages.length)]; 
+        const popup = document.createElement('div'); 
+        popup.className = 'celebration-popup roast-popup'; 
+        popup.innerHTML = `<h3 style="font-size:2rem;font-weight:900;margin-bottom:16px;letter-spacing:1px;">${randomRoast}</h3><p style="font-size:0.85rem;opacity:0.9;">You gave up within 15 seconds</p>`; 
+        document.body.appendChild(popup); 
+        setTimeout(() => popup.remove(), 2800); 
+    }
+    
+    function showToast(msg) { let t = document.getElementById('toastMsg'); t.innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
+    function celebrate(title, msg) { let p = document.createElement('div'); p.className = 'celebration-popup'; p.innerHTML = `<div class="text-5xl mb-2">🎉</div><h3 class="text-xl font-bold text-yellow-300">${title}</h3><p class="text-purple-200">${msg}</p>`; document.body.appendChild(p); setTimeout(() => p.remove(), 2800); }
+    
+    async function saveData() { if (!currentUser) return; await setDoc(doc(db, "users", currentUser.uid, "data", "forest"), { forest }); await setDoc(doc(db, "users", currentUser.uid, "data", "tasks"), { tasks }); await setDoc(doc(db, "users", currentUser.uid, "data", "unfinished"), { unfinished }); await setDoc(doc(db, "users", currentUser.uid, "data", "coins"), { coins }); }
+    async function loadData(uid) { let f = await getDoc(doc(db, "users", uid, "data", "forest")); let t = await getDoc(doc(db, "users", uid, "data", "tasks")); let u = await getDoc(doc(db, "users", uid, "data", "unfinished")); let c = await getDoc(doc(db, "users", uid, "data", "coins")); forest = f.exists() ? f.data().forest || [] : []; tasks = t.exists() ? t.data().tasks || [] : []; unfinished = u.exists() ? u.data().unfinished || [] : []; coins = c.exists() ? c.data().coins || 0 : 0; updateUI(); }
+    
+    function checkAndMoveUnfinishedTasks() { let now = Date.now(); let moved = false; tasks = tasks.filter(task => { if (!task.completed && task.createdAt && (now - new Date(task.createdAt).getTime()) >= 24 * 3600000) { unfinished.push({ ...task, movedAt: new Date().toISOString() }); moved = true; return false; } return true; }); if (moved) { saveData(); updateUI(); showToast('⏰ Old unfinished tasks moved to Unfinished'); } }
+    
+    function updateWidgets(progress) {
+        let percent = progress * 100;
+        // Coffee
+        let coffeeLiquid = document.getElementById('coffeeLiquid'); if(coffeeLiquid) coffeeLiquid.style.height = percent + '%';
+        let coffeeLabel = document.getElementById('coffeeLabel'); if(coffeeLabel) coffeeLabel.innerText = percent >= 100 ? "Ready! ☕" : `${Math.round(percent)}% filled`;
+        let coffeeSteam = document.getElementById('coffeeSteam'); if(coffeeSteam) coffeeSteam.style.opacity = percent > 50 ? '0.6' : '0';
+        // Bookshelf
+        let maxBooks = 16; let bookCount = Math.floor((percent / 100) * maxBooks); let booksHtml = ''; for (let i = 0; i < maxBooks; i++) booksHtml += `<div class="book" style="height: ${i < bookCount ? 30 + (i%3)*5 : 0}px;"></div>`; let booksContainer = document.getElementById('booksContainer'); if(booksContainer) booksContainer.innerHTML = booksHtml;
+        let shelfLabel = document.getElementById('shelfLabel'); if(shelfLabel) shelfLabel.innerText = `${bookCount} / ${maxBooks} books`;
+        // Battery (standing vertical)
+        let batteryLevel = document.getElementById('batteryLevel'); if(batteryLevel) batteryLevel.style.height = percent + '%';
+        let batteryLabel = document.getElementById('batteryLabel'); if(batteryLabel) batteryLabel.innerText = `${Math.round(percent)}%`;
+        // Thermometer
+        let mercuryFill = document.getElementById('mercuryFill'); if(mercuryFill) mercuryFill.style.height = percent + '%';
+        let thermometerLabel = document.getElementById('thermometerLabel'); if(thermometerLabel) thermometerLabel.innerText = percent >= 100 ? "🔥 BOILING!" : `${Math.floor(percent)}°C`;
+        // Cat
+        let eyeOpen = percent > 30; let catEye = document.getElementById('catEye'); let catEyeR = document.getElementById('catEyeRight'); let catTail = document.getElementById('catTail'); let zzz = document.getElementById('zzzText'); let catLabel = document.getElementById('catLabel');
+        if(catEye) { catEye.style.width = eyeOpen ? '8px' : '6px'; catEye.style.height = eyeOpen ? '8px' : '6px'; catEye.style.background = eyeOpen ? '#4ade80' : '#1a1a1a'; }
+        if(catEyeR) { catEyeR.style.width = eyeOpen ? '8px' : '6px'; catEyeR.style.height = eyeOpen ? '8px' : '6px'; catEyeR.style.background = eyeOpen ? '#4ade80' : '#1a1a1a'; }
+        if(catTail) catTail.style.transform = `rotate(${percent * 0.8}deg)`;
+        if(zzz) zzz.style.opacity = percent < 50 ? '0.8' : '0';
+        if(catLabel) catLabel.innerText = percent >= 100 ? "AWAKE & PLAYFUL!" : percent > 60 ? "Stretching..." : "Sleeping";
+        // Cactus
+        let maxHeight = 80; let plantHeight = Math.min(maxHeight, (percent / 100) * maxHeight);
+        let cactusPlant = document.getElementById('cactusPlant'); if(cactusPlant) cactusPlant.style.height = plantHeight + 'px';
+        let armHeight = Math.max(0, (percent - 20) / 100 * 30);
+        let cactusArmLeft = document.getElementById('cactusArmLeft'); if(cactusArmLeft) cactusArmLeft.style.height = armHeight + 'px';
+        let cactusArmRight = document.getElementById('cactusArmRight'); if(cactusArmRight) cactusArmRight.style.height = armHeight + 'px';
+        let cactusFlower = document.getElementById('cactusFlower'); if(cactusFlower) cactusFlower.style.opacity = percent >= 90 ? '1' : '0';
+        let cactusLabel = document.getElementById('cactusLabel'); if(cactusLabel) cactusLabel.innerText = percent >= 100 ? "FULL BLOOM!" : percent > 70 ? "Growing strong" : percent > 30 ? "Sprouting" : "Seed";
+    }
+    
+    function switchWidget(widget) { currentWidget = widget; document.getElementById('coffeeWidget').style.display = widget === 'coffee' ? 'block' : 'none'; document.getElementById('bookshelfWidget').style.display = widget === 'bookshelf' ? 'block' : 'none'; document.getElementById('batteryWidget').style.display = widget === 'battery' ? 'block' : 'none'; document.getElementById('thermometerWidget').style.display = widget === 'thermometer' ? 'block' : 'none'; document.getElementById('catWidget').style.display = widget === 'cat' ? 'block' : 'none'; document.getElementById('cactusWidget').style.display = widget === 'cactus' ? 'block' : 'none'; updateWidgets(timerTotal > 0 ? timerSeconds / timerTotal : 0); }
+    
+    function updateModernTimerUI() { let remain = timerTotal - timerSeconds; let mins = Math.floor(remain / 60), secs = remain % 60; document.getElementById('modernTimerDisplay').innerText = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`; let progress = timerSeconds / timerTotal; let offset = ringCircumference - (progress * ringCircumference); let ring = document.getElementById('timerRingModern'); if(ring) ring.style.strokeDashoffset = offset; if (timerTotal > 0) updateWidgets(progress); let statusSpan = document.getElementById('timerStatusModern'); if (progress >= 1 && timerSeconds > 0) statusSpan.innerHTML = '✓ Complete!'; else if (isRunning) statusSpan.innerHTML = '🌱 Growing...'; else statusSpan.innerHTML = timerSeconds > 0 ? '⏸ Paused' : '● Ready'; }
+    
+    async function completeSession() { if (timerInterval) clearInterval(timerInterval); isRunning = false; let mins = Math.floor(timerSeconds / 60); if (mins >= 1) { let earned = mins >= 60 ? 30 : mins >= 30 ? 20 : mins >= 15 ? 12 : mins >= 5 ? 5 : 2; forest.push({ id: Date.now(), type: currentWidget, duration: mins, date: new Date().toISOString() }); coins += earned; await saveData(); celebrate("Session Complete!", `+${earned} coins · ${mins} minutes`); updateUI(); } timerSeconds = 0; updateModernTimerUI(); document.getElementById('startFocusBtn').classList.remove('hidden'); document.getElementById('pauseFocusBtn').classList.add('hidden'); document.getElementById('abortFocusBtn').classList.add('hidden'); }
+    function startTimer() { if (isRunning || timerTotal === 0) return; isRunning = true; document.getElementById('startFocusBtn').classList.add('hidden'); document.getElementById('pauseFocusBtn').classList.remove('hidden'); document.getElementById('abortFocusBtn').classList.remove('hidden'); timerInterval = setInterval(() => { if (timerSeconds < timerTotal) { timerSeconds++; updateModernTimerUI(); } else { completeSession(); } }, 1000); }
+    function pauseTimer() { if (!isRunning) return; clearInterval(timerInterval); isRunning = false; let btn = document.getElementById('pauseFocusBtn'); btn.innerHTML = '▶ Resume'; let resumeHandler = () => { startTimer(); btn.innerHTML = '⏸ Pause'; btn.removeEventListener('click', resumeHandler); }; btn.removeEventListener('click', pauseTimer); btn.addEventListener('click', resumeHandler); updateModernTimerUI(); }
+    function abortTimer() { let elapsedSeconds = timerSeconds; clearInterval(timerInterval); isRunning = false; if (elapsedSeconds <= 15 && elapsedSeconds > 0) { showRoastPopup(); } timerSeconds = 0; updateModernTimerUI(); document.getElementById('startFocusBtn').classList.remove('hidden'); document.getElementById('pauseFocusBtn').classList.add('hidden'); document.getElementById('abortFocusBtn').classList.add('hidden'); showToast('Session cancelled'); }
+    
+    function renderTaskItem(task) { return `<div class="checkbox-container"><input type="checkbox" id="task_${task.id}" class="task-checkbox" ${task.completed ? 'checked' : ''} onchange="window.toggleTask(${task.id}, this.checked)" /><label for="task_${task.id}" class="checkbox-label"><div class="checkbox-box"><div class="checkbox-fill"></div><div class="checkmark"><svg viewBox="0 0 24 24" class="check-icon"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"></path></svg></div></div><span class="checkbox-text">${escapeHtml(task.text)} ${task.category ? `<span class="task-category-badge">${task.category}</span>` : ''}</span><button onclick="event.stopPropagation(); window.deleteTask(${task.id})" class="delete-task-btn">🗑</button></label></div>`; }
+    function renderUnfinishedItem(task) { return `<div class="checkbox-container"><div class="checkbox-label" style="background:rgba(239,68,68,0.15)"><div class="checkbox-box" style="border-color:#f97316"><div class="checkbox-fill" style="background:#f97316"></div></div><span class="checkbox-text" style="color:#fcd34d">⚠️ ${escapeHtml(task.text)} ${task.category ? `<span class="task-category-badge">${task.category}</span>` : ''}</span><button onclick="window.deleteUnfinished(${task.id})" class="delete-task-btn">🗑</button></div></div>`; }
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m) { if(m === '&') return '&amp;'; if(m === '<') return '&lt;'; if(m === '>') return '&gt;'; return m; }); }
+    
+    window.toggleTask = async (id, checked) => { let task = tasks.find(t => t.id === id); if(task && task.completed !== checked) { task.completed = checked; task.completedAt = checked ? new Date().toISOString() : null; await saveData(); updateUI(); if(checked) showToast('Task completed! +🪙'); } };
+    window.deleteTask = async (id) => { tasks = tasks.filter(t => t.id !== id); await saveData(); updateUI(); showToast('Task deleted'); };
+    window.deleteUnfinished = async (id) => { unfinished = unfinished.filter(t => t.id !== id); await saveData(); updateUI(); showToast('Unfinished removed'); };
+    window.deleteTree = async (id) => { forest = forest.filter(t => t.id !== id); await saveData(); updateUI(); showToast('Tree removed'); };
+    
+    function setupCategoryPills() { document.querySelectorAll('#quickCategoryPills .category-pill').forEach(pill => { pill.onclick = () => { document.querySelectorAll('#quickCategoryPills .category-pill').forEach(p => p.classList.remove('active')); pill.classList.add('active'); selectedQuickCategory = pill.dataset.cat; }; }); document.querySelectorAll('#fullCategoryPills .category-pill').forEach(pill => { pill.onclick = () => { document.querySelectorAll('#fullCategoryPills .category-pill').forEach(p => p.classList.remove('active')); pill.classList.add('active'); selectedFullCategory = pill.dataset.cat; }; }); }
+    
+    function updateTaskAnalytics() { let completed = tasks.filter(t => t.completed).length, current = tasks.filter(t => !t.completed).length, unfinishedCount = unfinished.length, total = completed + current + unfinishedCount; let cp = total > 0 ? ((completed/total)*100).toFixed(1) : 0; let curp = total > 0 ? ((current/total)*100).toFixed(1) : 0; let unp = total > 0 ? ((unfinishedCount/total)*100).toFixed(1) : 0; document.getElementById('legendCompleted').innerText = `${cp}%`; document.getElementById('legendCurrent').innerText = `${curp}%`; document.getElementById('legendUnfinished').innerText = `${unp}%`; if (taskDonutChart) taskDonutChart.destroy(); let ctx = document.getElementById('taskDonutChart').getContext('2d'); taskDonutChart = new Chart(ctx, { type: 'doughnut', data: { labels: ['Completed', 'Current', 'Unfinished'], datasets: [{ data: [completed, current, unfinishedCount], backgroundColor: ['#a855f7', '#7c3aed', '#f97316'], borderWidth: 0 }] }, options: { responsive: true, maintainAspectRatio: true, cutout: '60%', plugins: { legend: { display: false } } } }); document.getElementById('taskStatsText').innerHTML = `📊 Total: ${total} tasks | ✅ ${completed} done | ⏳ ${current} current | ⚠️ ${unfinishedCount} unfinished`; }
+    
+    function updateUI() { document.getElementById('globalCoins').innerText = coins; document.getElementById('dashTotalTrees').innerText = forest.length; let totalHours = forest.reduce((s,t)=>s+(t.duration||0),0)/60; document.getElementById('dashTotalHours').innerText = totalHours.toFixed(1); let completedTasksCount = tasks.filter(t=>t.completed).length; document.getElementById('dashCompletedTasks').innerText = completedTasksCount; let todayTrees = forest.filter(t=>new Date(t.date).toDateString()===new Date().toDateString()).length; document.getElementById('dashStreak').innerText = todayTrees>0?1:0; let pending = tasks.filter(t=>!t.completed); document.getElementById('compactTaskList').innerHTML = pending.slice(0,5).map(renderTaskItem).join('') || '<div class="text-center text-purple-400/50 text-sm py-4">✨ No pending tasks</div>'; let totalAll = tasks.length + unfinished.length; document.getElementById('taskProgress').innerText = `${completedTasksCount}/${totalAll} completed`; document.getElementById('progressFill').style.width = totalAll ? (completedTasksCount/totalAll)*100+'%' : '0%'; document.getElementById('completedTasksListSmall').innerHTML = tasks.filter(t=>t.completed).slice(-5).map(renderTaskItem).join('') || '<div class="text-center text-purple-400/50 text-sm py-4">No completed tasks</div>'; document.getElementById('unfinishedTasksList').innerHTML = unfinished.slice(-5).map(renderUnfinishedItem).join('') || '<div class="text-center text-orange-400/50 text-sm py-4">✨ No unfinished tasks</div>'; document.getElementById('pendingTasksList').innerHTML = pending.map(renderTaskItem).join(''); document.getElementById('completedTasksList').innerHTML = tasks.filter(t=>t.completed).map(renderTaskItem).join(''); document.getElementById('unfinishedTasksFullList').innerHTML = unfinished.map(renderUnfinishedItem).join(''); document.getElementById('forestGrid').innerHTML = forest.slice().reverse().map(t=>`<div class="forest-card"><div class="text-3xl">🌲</div><div class="text-xs mt-1">${t.duration} min</div><div class="text-[10px]">${new Date(t.date).toLocaleDateString()}</div><button onclick="window.deleteTree(${t.id})" class="text-red-400 text-xs mt-1">🗑</button></div>`).join(''); let totalMins = forest.reduce((a,b)=>a+b.duration,0); document.getElementById('forestStats').innerHTML = `🌲 ${forest.length} trees · ${(totalMins/60).toFixed(1)} hours focus`; updateTaskAnalytics(); if (lineChart) lineChart.destroy(); let last7 = Array(7).fill(0); forest.forEach(t=>{ let d = new Date(t.date).getDay(); last7[d] += t.duration; }); let ctx = document.getElementById('focusChartLine').getContext('2d'); lineChart = new Chart(ctx, { type: 'line', data: { labels: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], datasets: [{ label: 'Focus Minutes', data: last7, borderColor: '#a78bfa', backgroundColor: 'rgba(167,139,250,0.1)', fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top', labels: { color: '#ddd', font: { size: 9 } } } } } }); document.getElementById('insightsBlock').innerHTML = `🌱 ${forest.length} trees · ${(totalMins/60).toFixed(1)} hours focused · ${unfinished.length} unfinished`; }
+    
+    async function addTask(text, category) { if(!text.trim()) return; tasks.push({ id: Date.now(), text: text.trim(), completed: false, category, createdAt: new Date().toISOString() }); await saveData(); updateUI(); showToast('Task added'); }
+    
+    document.getElementById('setTimerBtn').onclick = () => { let hrs = parseInt(document.getElementById('hoursInput').value)||0; let mins = parseInt(document.getElementById('minutesInput').value)||0; if(hrs===0 && mins===0) return; timerTotal = (hrs*60+mins)*60; timerSeconds=0; updateModernTimerUI(); showToast(`Timer set: ${hrs}h ${mins}m`); };
+    document.getElementById('startFocusBtn').onclick = startTimer; document.getElementById('pauseFocusBtn').onclick = pauseTimer; document.getElementById('abortFocusBtn').onclick = abortTimer;
+    document.getElementById('addQuickTaskBtn').onclick = () => { addTask(document.getElementById('quickTaskInput').value, selectedQuickCategory); document.getElementById('quickTaskInput').value=''; };
+    document.getElementById('addFullTaskBtn').onclick = () => { addTask(document.getElementById('fullTaskInput').value, selectedFullCategory); document.getElementById('fullTaskInput').value=''; };
+    window.switchPage = (page) => { document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active')); document.getElementById(page+'Page').classList.add('active'); document.querySelectorAll('.link').forEach(l=>l.classList.remove('active')); document.querySelector(`.link[data-page="${page}"]`).classList.add('active'); };
+    document.querySelectorAll('.link').forEach(link=>link.addEventListener('click',()=>switchPage(link.dataset.page)));
+    document.querySelectorAll('.widget-btn').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('.widget-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); switchWidget(btn.dataset.widget); }));
+    document.getElementById('doLoginBtn').onclick = async()=>{ try{ await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); }catch(e){ alert(e.message); } };
+    document.getElementById('doSignupBtn').onclick = async()=>{ try{ await createUserWithEmailAndPassword(auth, document.getElementById('signupEmail').value, document.getElementById('signupPassword').value); }catch(e){ alert(e.message); } };
+    document.getElementById('showSignupBtn').onclick = ()=>{ document.getElementById('loginFields').style.display='none'; document.getElementById('signupFields').style.display='block'; };
+    document.getElementById('showLoginBtn').onclick = ()=>{ document.getElementById('signupFields').style.display='none'; document.getElementById('loginFields').style.display='block'; };
+    document.getElementById('logoutBtn').onclick = async()=>{ await signOut(auth); };
+    setInterval(()=>{ if(currentUser) checkAndMoveUnfinishedTasks(); }, 3600000);
+    onAuthStateChanged(auth, async(user)=>{ if(user){ currentUser=user; await loadData(user.uid); document.getElementById('authOverlay').style.display='none'; document.getElementById('mainApp').style.display='block'; } else { document.getElementById('authOverlay').style.display='flex'; document.getElementById('mainApp').style.display='none'; } });
+    updateModernTimerUI(); switchWidget('cactus'); setupCategoryPills();
+</script>
+</body>
+</html>
