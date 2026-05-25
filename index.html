@@ -49,6 +49,32 @@
         .btn-secondary { background: rgba(124, 58, 237, 0.2); border: 1px solid rgba(139, 92, 246, 0.5); border-radius: 44px; padding: 8px 20px; font-weight: 500; cursor: pointer; color: #ddd6fe; }
         .btn-danger { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 44px; padding: 8px 20px; font-weight: 500; cursor: pointer; color: #fca5a5; }
         
+        /* Purple Spotify Button - فوق الزرار (top area styling) */
+        .spotify-nav-btn {
+            background: linear-gradient(135deg, #9333ea, #7e22ce);
+            border: 1px solid rgba(192, 132, 252, 0.6);
+            box-shadow: 0 4px 14px rgba(139, 92, 246, 0.4);
+            transition: all 0.25s ease;
+            border-radius: 40px;
+            padding: 8px 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: white;
+            backdrop-filter: blur(4px);
+        }
+        .spotify-nav-btn:hover {
+            transform: scale(1.03);
+            background: linear-gradient(135deg, #a855f7, #9333ea);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+            border-color: #c084fc;
+        }
+        .spotify-nav-btn i {
+            font-size: 1.1rem;
+        }
+        
         .menu {
             padding: 0.5rem;
             background-color: rgba(15, 12, 35, 0.95);
@@ -156,15 +182,13 @@
         .timer-status-text { font-size: 0.7rem; margin-top: 8px; letter-spacing: 1px; font-weight: 600; background: rgba(0,0,0,0.4); display: inline-block; padding: 4px 12px; border-radius: 40px; }
         @media (max-width: 640px) { .circular-timer { width: 220px; height: 220px; } .circular-timer-inner { font-size: 2.2rem; } }
         
-        /* ===== WIDGET 1: COFFEE CUP ===== */
+        /* Widget Styles */
         .coffee-cup { position: relative; width: 100px; height: 120px; margin: 0 auto; }
         .cup-body { position: relative; width: 80px; height: 80px; background: #2c1a0e; border-radius: 0 0 30px 30px; margin: 0 auto; overflow: hidden; border: 3px solid #d4a373; border-top: none; }
         .cup-handle { position: absolute; right: -18px; top: 15px; width: 20px; height: 40px; border: 4px solid #d4a373; border-radius: 0 20px 20px 0; border-left: none; }
         .coffee-liquid { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(135deg, #6f4e37, #3e2723); transition: height 0.3s ease-out; border-radius: 0 0 27px 27px; }
         .steam { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 50px; height: 20px; background: radial-gradient(circle, rgba(255,255,255,0.4), transparent); filter: blur(4px); opacity: 0; transition: opacity 0.3s; }
         .cup-label { font-size: 10px; text-align: center; margin-top: 6px; color: #d4a373; }
-        
-        /* ===== WIDGET 2: BOOKSHELF ===== */
         .bookshelf { width: 240px; margin: 0 auto; background: #5d4037; border-radius: 8px 8px 0 0; padding: 10px; }
         .bookshelf-shelf { background: #4e342e; height: 5px; width: 100%; margin: 8px 0; border-radius: 2px; }
         .books-container { display: flex; flex-wrap: wrap; gap: 5px; min-height: 80px; align-items: flex-end; justify-content: center; }
@@ -172,22 +196,16 @@
         .book:nth-child(even) { background: linear-gradient(135deg, #1e88e5, #1565c0); }
         .book:nth-child(3n) { background: linear-gradient(135deg, #43a047, #2e7d32); }
         .shelf-label { font-size: 10px; text-align: center; margin-top: 6px; color: #d4a373; }
-        
-        /* ===== WIDGET 3: BATTERY (STANDING VERTICAL) ===== */
         .battery { width: 70px; margin: 0 auto; position: relative; }
         .battery-body { width: 50px; height: 90px; background: #1a1a2e; border: 3px solid #4a4a6a; border-radius: 12px 12px 8px 8px; position: relative; overflow: hidden; }
         .battery-cap { position: absolute; top: -12px; left: 12px; width: 22px; height: 12px; background: #4a4a6a; border-radius: 4px 4px 0 0; }
         .battery-level { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(135deg, #4caf50, #2e7d32); transition: height 0.3s ease-out; border-radius: 0 0 6px 6px; }
         .battery-label { font-size: 10px; text-align: center; margin-top: 12px; color: #a5d6a7; font-weight: bold; }
-        
-        /* ===== WIDGET 4: THERMOMETER ===== */
         .thermometer { width: 60px; margin: 0 auto; position: relative; }
         .thermometer-bulb { width: 36px; height: 36px; background: #c0c0c0; border-radius: 50%; margin: 0 auto; position: relative; z-index: 1; border: 2px solid #888; }
         .thermometer-stem { width: 18px; height: 90px; background: #e0e0e0; margin: -8px auto 0; border-radius: 15px 15px 5px 5px; position: relative; overflow: hidden; border: 2px solid #aaa; }
         .mercury { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(135deg, #ef4444, #dc2626); transition: height 0.3s ease-out; border-radius: 0 0 10px 10px; }
         .thermometer-label { font-size: 10px; text-align: center; margin-top: 8px; color: #fca5a5; font-weight: bold; }
-        
-        /* ===== WIDGET 5: SLEEPING CAT ===== */
         .sleeping-cat { width: 140px; margin: 0 auto; text-align: center; position: relative; }
         .cat-body { width: 80px; height: 40px; background: #f59e0b; border-radius: 40px 40px 30px 30px; margin: 0 auto; position: relative; transition: all 0.3s ease; }
         .cat-head { width: 45px; height: 35px; background: #f59e0b; border-radius: 50%; position: absolute; left: -15px; top: -10px; }
@@ -202,8 +220,6 @@
         .zzz { position: absolute; top: -25px; right: 10px; font-size: 14px; font-weight: bold; color: #fff; opacity: 0.7; animation: floatZ 1.5s infinite; }
         @keyframes floatZ { 0%, 100% { transform: translateY(0); opacity: 0.5; } 50% { transform: translateY(-8px); opacity: 1; } }
         .cat-label { font-size: 10px; text-align: center; margin-top: 8px; color: #fcd34d; }
-        
-        /* ===== WIDGET 6: CACTUS ===== */
         .cactus { width: 80px; margin: 0 auto; text-align: center; position: relative; }
         .cactus-pot { width: 50px; height: 30px; background: #8b5a2b; border-radius: 5px 5px 15px 15px; margin: 0 auto; border-top: 3px solid #a0522d; }
         .cactus-plant { position: relative; width: 40px; height: 0; background: linear-gradient(135deg, #4caf50, #2e7d32); border-radius: 20px 20px 5px 5px; margin: 0 auto; transition: height 0.3s ease-out; overflow: hidden; }
@@ -212,12 +228,10 @@
         .cactus-arm-right { right: -16px; top: 60%; transform: rotate(20deg); }
         .cactus-flower { position: absolute; top: -8px; left: 50%; transform: translateX(-50%); width: 12px; height: 12px; background: #f43f5e; border-radius: 50%; opacity: 0; transition: opacity 0.3s; box-shadow: 0 0 5px #f43f5e; }
         .cactus-label { font-size: 10px; text-align: center; margin-top: 8px; color: #86efac; }
-        
         .widget-selector { display: flex; gap: 6px; justify-content: center; margin-bottom: 15px; flex-wrap: wrap; }
         .widget-btn { background: rgba(124, 58, 237, 0.2); border: 1px solid rgba(139, 92, 246, 0.5); border-radius: 40px; padding: 4px 10px; font-size: 11px; cursor: pointer; transition: all 0.2s; }
         .widget-btn.active { background: linear-gradient(105deg, #7c3aed, #a855f7); color: white; border: none; }
         .widget-container { min-height: 200px; display: flex; align-items: center; justify-content: center; }
-        
         .checkbox-container { margin-bottom: 12px; width: 100%; }
         .task-checkbox { display: none; }
         .checkbox-label { display: flex; align-items: center; gap: 12px; cursor: pointer; background: rgba(30, 20, 50, 0.4); padding: 10px 12px; border-radius: 16px; transition: all 0.2s ease; width: 100%; }
@@ -233,7 +247,6 @@
         .task-checkbox:checked + .checkbox-label .checkbox-text { text-decoration: line-through; opacity: 0.6; }
         .delete-task-btn { background: rgba(239, 68, 68, 0.2); border: none; border-radius: 30px; padding: 4px 10px; font-size: 11px; cursor: pointer; color: #fca5a5; transition: all 0.2s; margin-left: 8px; flex-shrink: 0; }
         .delete-task-btn:hover { background: rgba(239, 68, 68, 0.5); }
-        
         .auto-move-section { background: rgba(168, 85, 247, 0.15); border-radius: 16px; padding: 8px; margin-top: 12px; border: 1px dashed rgba(168, 85, 247, 0.4); }
         .analytics-card { background: rgba(25, 20, 50, 0.7); backdrop-filter: blur(8px); border-radius: 24px; border: 1px solid rgba(167, 139, 250, 0.2); padding: 16px; margin-bottom: 20px; }
         .donut-legend-container { display: flex; align-items: center; justify-content: space-around; flex-wrap: wrap; gap: 15px; }
@@ -245,36 +258,13 @@
         .legend-percent { font-size: 11px; color: #a855f7; font-weight: bold; margin-left: auto; }
         .made-by-divider { text-align: center; padding: 8px 0; margin: 5px 0; }
         .made-by-text { font-size: 10px; letter-spacing: 2px; color: rgba(168, 85, 247, 0.5); background: rgba(25, 20, 50, 0.5); display: inline-block; padding: 5px 15px; border-radius: 40px; }
-        #taskDonutChart { max-height: 110px !important; width: 100% !important; }
-        #focusChartLine { max-height: 120px !important; width: 100% !important; }
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #1a0f2e; }
-        ::-webkit-scrollbar-thumb { background: #a855f7; border-radius: 4px; }
-        
-        /* Roast popup style - clean, no emojis */
-        .roast-popup { background: linear-gradient(145deg, #5c1a1a, #3a0a0a); border: 2px solid #ff5555; border-radius: 32px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
-        .roast-popup h3 { font-size: 2.5rem; font-weight: 900; letter-spacing: 2px; margin-bottom: 12px; font-family: 'Montserrat', monospace; }
-        .roast-popup p { font-size: 0.9rem; opacity: 0.9; }
-        
         .category-pills { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 12px; margin-bottom: 12px; }
         .category-pill { background: rgba(30, 20, 50, 0.5); border: 1px solid rgba(139, 92, 246, 0.4); border-radius: 40px; padding: 6px 16px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; color: #c4b5fd; display: inline-flex; align-items: center; gap: 8px; }
         .category-pill.active { background: linear-gradient(105deg, #7c3aed, #a855f7); color: white; border: none; }
         .task-category-badge { display: inline-flex; align-items: center; gap: 5px; background: rgba(124, 58, 237, 0.25); border-radius: 30px; padding: 2px 8px; font-size: 9px; margin-left: 8px; }
-        
-        /* Spotify button style */
-        .spotify-btn {
-            background: linear-gradient(105deg, #1DB954, #1aa34a);
-            padding: 8px 20px;
-            border-radius: 44px;
-            font-weight: 700;
-            text-decoration: none;
-            color: white;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: transform 0.2s;
-        }
-        .spotify-btn:hover { transform: scale(1.02); }
+        .roast-popup { background: linear-gradient(145deg, #5c1a1a, #3a0a0a); border: 2px solid #ff5555; border-radius: 32px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); }
+        .roast-popup h3 { font-size: 2.5rem; font-weight: 900; letter-spacing: 2px; margin-bottom: 12px; font-family: 'Montserrat', monospace; }
+        .roast-popup p { font-size: 0.9rem; opacity: 0.9; }
     </style>
 </head>
 <body>
@@ -294,14 +284,11 @@
             <p class="text-sm text-purple-300/70">grow with every minute</p>
         </div>
         <div class="flex gap-3 items-center">
+            <!-- PURPLE SPOTIFY BUTTON: يربط ب http://localhost:5001/ مع لون بنفسجي -->
+            <button id="spotifyLocalBtn" class="spotify-nav-btn">
+                <i class="fab fa-spotify"></i> <span>Spotify</span>
+            </button>
             <div class="bg-purple-900/60 rounded-full px-4 py-1.5 flex gap-2"><span>🪙</span><span id="globalCoins">0</span></div>
-            <!-- Spotify Button -->
-            <a href="https://mobutdio.github.io/mo-dio/" target="_blank" class="spotify-btn">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.36-.66.48-1.02.24-2.82-1.74-6.36-2.1-10.56-1.14-.42.12-.84-.12-.96-.54-.12-.42.12-.84.54-.96 4.56-1.02 8.52-.66 11.64 1.26.36.18.48.66.24 1.02zm1.44-3.3c-.3.42-.78.6-1.2.3-3.24-1.98-8.16-2.58-11.94-1.38-.48.18-.96-.06-1.14-.48-.18-.48.06-.96.48-1.14 4.26-1.38 9.54-.72 13.2 1.5.42.24.6.78.36 1.2zm.12-3.48C15.84 8.4 8.4 8.16 4.56 9.6c-.6.24-1.2-.06-1.44-.6-.24-.6.06-1.2.6-1.44 4.44-1.68 12.48-1.44 16.98 1.32.54.36.72 1.08.36 1.62-.36.48-1.08.66-1.62.3z"/>
-                </svg>
-                Spotify
-            </a>
             <button id="logoutBtn" class="text-xs bg-purple-800/40 px-3 py-1.5 rounded-full">Logout</button>
         </div>
     </header>
@@ -360,27 +347,21 @@
     
     function updateWidgets(progress) {
         let percent = progress * 100;
-        // Coffee
         let coffeeLiquid = document.getElementById('coffeeLiquid'); if(coffeeLiquid) coffeeLiquid.style.height = percent + '%';
         let coffeeLabel = document.getElementById('coffeeLabel'); if(coffeeLabel) coffeeLabel.innerText = percent >= 100 ? "Ready! ☕" : `${Math.round(percent)}% filled`;
         let coffeeSteam = document.getElementById('coffeeSteam'); if(coffeeSteam) coffeeSteam.style.opacity = percent > 50 ? '0.6' : '0';
-        // Bookshelf
         let maxBooks = 16; let bookCount = Math.floor((percent / 100) * maxBooks); let booksHtml = ''; for (let i = 0; i < maxBooks; i++) booksHtml += `<div class="book" style="height: ${i < bookCount ? 30 + (i%3)*5 : 0}px;"></div>`; let booksContainer = document.getElementById('booksContainer'); if(booksContainer) booksContainer.innerHTML = booksHtml;
         let shelfLabel = document.getElementById('shelfLabel'); if(shelfLabel) shelfLabel.innerText = `${bookCount} / ${maxBooks} books`;
-        // Battery (standing vertical)
         let batteryLevel = document.getElementById('batteryLevel'); if(batteryLevel) batteryLevel.style.height = percent + '%';
         let batteryLabel = document.getElementById('batteryLabel'); if(batteryLabel) batteryLabel.innerText = `${Math.round(percent)}%`;
-        // Thermometer
         let mercuryFill = document.getElementById('mercuryFill'); if(mercuryFill) mercuryFill.style.height = percent + '%';
         let thermometerLabel = document.getElementById('thermometerLabel'); if(thermometerLabel) thermometerLabel.innerText = percent >= 100 ? "🔥 BOILING!" : `${Math.floor(percent)}°C`;
-        // Cat
         let eyeOpen = percent > 30; let catEye = document.getElementById('catEye'); let catEyeR = document.getElementById('catEyeRight'); let catTail = document.getElementById('catTail'); let zzz = document.getElementById('zzzText'); let catLabel = document.getElementById('catLabel');
         if(catEye) { catEye.style.width = eyeOpen ? '8px' : '6px'; catEye.style.height = eyeOpen ? '8px' : '6px'; catEye.style.background = eyeOpen ? '#4ade80' : '#1a1a1a'; }
         if(catEyeR) { catEyeR.style.width = eyeOpen ? '8px' : '6px'; catEyeR.style.height = eyeOpen ? '8px' : '6px'; catEyeR.style.background = eyeOpen ? '#4ade80' : '#1a1a1a'; }
         if(catTail) catTail.style.transform = `rotate(${percent * 0.8}deg)`;
         if(zzz) zzz.style.opacity = percent < 50 ? '0.8' : '0';
         if(catLabel) catLabel.innerText = percent >= 100 ? "AWAKE & PLAYFUL!" : percent > 60 ? "Stretching..." : "Sleeping";
-        // Cactus
         let maxHeight = 80; let plantHeight = Math.min(maxHeight, (percent / 100) * maxHeight);
         let cactusPlant = document.getElementById('cactusPlant'); if(cactusPlant) cactusPlant.style.height = plantHeight + 'px';
         let armHeight = Math.max(0, (percent - 20) / 100 * 30);
@@ -420,6 +401,16 @@
     document.getElementById('startFocusBtn').onclick = startTimer; document.getElementById('pauseFocusBtn').onclick = pauseTimer; document.getElementById('abortFocusBtn').onclick = abortTimer;
     document.getElementById('addQuickTaskBtn').onclick = () => { addTask(document.getElementById('quickTaskInput').value, selectedQuickCategory); document.getElementById('quickTaskInput').value=''; };
     document.getElementById('addFullTaskBtn').onclick = () => { addTask(document.getElementById('fullTaskInput').value, selectedFullCategory); document.getElementById('fullTaskInput').value=''; };
+    
+    // ========== SPOTIFY BUTTON LOGIC: يربط ب http://localhost:5001/ ==========
+    const spotifyBtn = document.getElementById('spotifyLocalBtn');
+    if(spotifyBtn) {
+        spotifyBtn.addEventListener('click', () => {
+            window.open('http://localhost:5001/', '_blank');
+            showToast('🎵 Opening Spotify server...');
+        });
+    }
+    
     window.switchPage = (page) => { document.querySelectorAll('.page-section').forEach(s=>s.classList.remove('active')); document.getElementById(page+'Page').classList.add('active'); document.querySelectorAll('.link').forEach(l=>l.classList.remove('active')); document.querySelector(`.link[data-page="${page}"]`).classList.add('active'); };
     document.querySelectorAll('.link').forEach(link=>link.addEventListener('click',()=>switchPage(link.dataset.page)));
     document.querySelectorAll('.widget-btn').forEach(btn=>btn.addEventListener('click',()=>{ document.querySelectorAll('.widget-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); switchWidget(btn.dataset.widget); }));
