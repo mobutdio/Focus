@@ -69,36 +69,18 @@
             animation: btnGlow 0.6s ease-out;
         }
         @keyframes btnGlow {
-            0% {
-                box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7);
-                transform: scale(1);
-            }
-            50% {
-                box-shadow: 0 0 30px 10px rgba(139, 92, 246, 0.9);
-                transform: scale(1.05);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(139, 92, 246, 0);
-                transform: scale(1);
-            }
+            0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7); transform: scale(1); }
+            50% { box-shadow: 0 0 30px 10px rgba(139, 92, 246, 0.9); transform: scale(1.05); }
+            100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); transform: scale(1); }
         }
         
         .flash-effect {
             animation: btnFlash 0.4s ease-out;
         }
         @keyframes btnFlash {
-            0% {
-                box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.8);
-                background: linear-gradient(105deg, #a855f7, #c084fc);
-            }
-            50% {
-                box-shadow: 0 0 40px 15px rgba(168, 85, 247, 1);
-                background: linear-gradient(105deg, #c084fc, #e9d5ff);
-            }
-            100% {
-                box-shadow: 0 0 0 0 rgba(168, 85, 247, 0);
-                background: linear-gradient(105deg, #7c3aed, #a855f7);
-            }
+            0% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.8); background: linear-gradient(105deg, #a855f7, #c084fc); }
+            50% { box-shadow: 0 0 40px 15px rgba(168, 85, 247, 1); background: linear-gradient(105deg, #c084fc, #e9d5ff); }
+            100% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0); background: linear-gradient(105deg, #7c3aed, #a855f7); }
         }
         
         .btn-secondary { 
@@ -133,6 +115,60 @@
             transform: scale(1.02);
         }
         
+        /* Day Selector Styles */
+        .day-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+        .day-btn {
+            background: rgba(30, 20, 50, 0.5);
+            border: 1px solid rgba(139, 92, 246, 0.4);
+            border-radius: 40px;
+            padding: 8px 18px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #c4b5fd;
+        }
+        .day-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 12px rgba(139,92,246,0.5);
+            background: rgba(124, 58, 237, 0.3);
+        }
+        .day-btn.active {
+            background: linear-gradient(105deg, #7c3aed, #a855f7);
+            color: white;
+            border: none;
+            box-shadow: 0 0 15px rgba(139,92,246,0.6);
+        }
+        .day-btn.today {
+            border: 2px solid #fbbf24;
+            box-shadow: 0 0 10px rgba(251,191,36,0.3);
+        }
+        
+        /* Reset Day Button */
+        .reset-day-btn {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            border-radius: 40px;
+            padding: 6px 14px;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            color: #fca5a5;
+            transition: all 0.3s ease;
+            margin-left: 10px;
+        }
+        .reset-day-btn:hover {
+            background: rgba(239, 68, 68, 0.4);
+            transform: scale(1.02);
+            box-shadow: 0 0 10px rgba(239,68,68,0.4);
+        }
+        
         .view-full-btn {
             background: rgba(124, 58, 237, 0.25);
             border: 1px solid rgba(139, 92, 246, 0.5);
@@ -151,15 +187,6 @@
             transform: scale(1.02);
             color: white;
         }
-        
-        .link-btn {
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .link-btn:active {
-            transform: scale(0.96);
-        }
-        
         
         .spotify-nav-btn {
             background: linear-gradient(135deg, #9333ea, #7e22ce);
@@ -486,10 +513,12 @@
 
 <div id="toastMsg" class="toast-modern"></div>
 
+<!-- Auth Overlay -->
 <div id="authOverlay" class="fixed inset-0 bg-gradient-to-br from-[#0f0c29] to-[#1a1a3e] z-[1000] flex items-center justify-center p-4">
     <div class="form"><div id="loginFields"><div><label class="text-white font-semibold">Email</label></div><div class="inputForm"><input id="loginEmail" placeholder="Email" class="input" type="text" /></div><div><label class="text-white font-semibold">Password</label></div><div class="inputForm"><input id="loginPassword" placeholder="Password" class="input" type="password" /></div><button id="doLoginBtn" class="button-submit mt-3">Sign In</button><p class="text-center text-white text-sm mt-2">Don't have an account? <span id="showSignupBtn" class="span">Sign Up</span></p></div><div id="signupFields" style="display:none;"><div><label class="text-white font-semibold">Email</label></div><div class="inputForm"><input id="signupEmail" placeholder="Email" class="input" type="text" /></div><div><label class="text-white font-semibold">Password</label></div><div class="inputForm"><input id="signupPassword" placeholder="Password" class="input" type="password" /></div><button id="doSignupBtn" class="button-submit mt-3">Create Account</button><p class="text-center text-white text-sm mt-2">Already have an account? <span id="showLoginBtn" class="span">Sign In</span></p></div></div>
 </div>
 
+<!-- Main App -->
 <div id="mainApp" style="display:none;">
     <header class="px-5 pt-5 pb-2 flex justify-between items-center flex-wrap gap-3">
         <div>
@@ -539,11 +568,53 @@
                         <div id="catWidget" class="sleeping-cat" style="display:none;"><div class="cat-body"><div class="cat-head"><div class="cat-ear"></div><div class="cat-ear cat-ear-right"></div><div class="cat-eye" id="catEye"></div><div class="cat-eye cat-eye-right" id="catEyeRight"></div><div class="cat-nose"></div><div class="cat-whisker"></div><div class="cat-whisker cat-whisker-right"></div></div><div class="cat-tail" id="catTail"></div></div><div class="zzz" id="zzzText">💤</div><div class="cat-label" id="catLabel">💤 Sleeping</div></div>
                         <div id="cactusWidget" class="cactus"><div class="cactus-plant" id="cactusPlant" style="height:0px"><div class="cactus-arm cactus-arm-left" id="cactusArmLeft" style="height:0px"></div><div class="cactus-arm cactus-arm-right" id="cactusArmRight" style="height:0px"></div><div class="cactus-flower" id="cactusFlower"></div></div><div class="cactus-pot"></div><div class="cactus-label" id="cactusLabel">🌱 Seedling</div></div>
                     </div></div></div>
-                <div><div class="card-sleek p-5 mb-5"><div class="flex justify-between items-center mb-3"><h3 class="text-xl font-bold">📋 Current Tasks</h3><button id="viewFullBtn" class="view-full-btn">Full view →</button></div><input type="text" id="quickTaskInput" placeholder="Write a task..." class="w-full bg-purple-950/40 border border-purple-500/40 rounded-2xl px-4 py-2"><div class="category-pills" id="quickCategoryPills"><div class="category-pill" data-cat="work">💼 Work</div><div class="category-pill" data-cat="study">📚 Study</div><div class="category-pill" data-cat="health">💪 Health</div><div class="category-pill" data-cat="personal">🎯 Personal</div></div><button id="addQuickTaskBtn" class="btn-secondary text-sm w-full mt-2">+ Add Task</button><div class="auto-move-section"><p class="text-xs text-purple-300">⏰ Unfinished tasks move after 24h</p></div><div class="mt-4 space-y-2 max-h-64 overflow-y-auto" id="compactTaskList"></div><div class="mt-3 text-xs text-purple-400"><span id="taskProgress">0/0 completed</span><div class="w-full h-1 bg-purple-900/50 rounded-full mt-1"><div id="progressFill" class="h-full bg-purple-500 w-0 rounded-full"></div></div></div></div>
+                <div><div class="card-sleek p-5 mb-5">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="text-xl font-bold">📋 Daily Tasks</h3>
+                        <button id="viewFullBtn" class="view-full-btn">Full view →</button>
+                    </div>
+                    
+                    <!-- Day Selector -->
+                    <div class="day-selector" id="daySelector"></div>
+                    
+                    <input type="text" id="quickTaskInput" placeholder="Write a task..." class="w-full bg-purple-950/40 border border-purple-500/40 rounded-2xl px-4 py-2">
+                    <div class="category-pills" id="quickCategoryPills">
+                        <div class="category-pill" data-cat="work">💼 Work</div>
+                        <div class="category-pill" data-cat="study">📚 Study</div>
+                        <div class="category-pill" data-cat="health">💪 Health</div>
+                        <div class="category-pill" data-cat="personal">🎯 Personal</div>
+                    </div>
+                    <button id="addQuickTaskBtn" class="btn-secondary text-sm w-full mt-2">+ Add Task</button>
+                    <div class="auto-move-section"><p class="text-xs text-purple-300">⏰ Tasks are saved per day</p></div>
+                    <div class="mt-4 space-y-2 max-h-64 overflow-y-auto" id="compactTaskList"></div>
+                    <div class="mt-3 text-xs text-purple-400"><span id="taskProgress">0/0 completed</span>
+                    <div class="w-full h-1 bg-purple-900/50 rounded-full mt-1"><div id="progressFill" class="h-full bg-purple-500 w-0 rounded-full"></div></div></div>
+                </div>
                 <div class="card-sleek p-5 mb-5"><h3 class="text-xl font-bold mb-3">✅ Completed</h3><div id="completedTasksListSmall" class="space-y-2 max-h-48 overflow-y-auto"></div></div>
                 <div class="card-sleek p-5"><h3 class="text-xl font-bold mb-3">⚠️ Unfinished</h3><div id="unfinishedTasksList" class="space-y-2 max-h-48 overflow-y-auto"></div></div></div>
             </div></div>
-        <div id="taskCenterPage" class="page-section"><div class="card-sleek p-6"><h2 class="text-2xl font-bold mb-4">🗂️ Task Manager</h2><div class="flex flex-wrap gap-3 mb-5"><input type="text" id="fullTaskInput" placeholder="New task..." class="flex-1 bg-purple-950/40 border border-purple-500/40 rounded-2xl px-4 py-2"><div class="category-pills" id="fullCategoryPills"><div class="category-pill" data-cat="work">💼 Work</div><div class="category-pill" data-cat="study">📚 Study</div><div class="category-pill" data-cat="health">💪 Health</div><div class="category-pill" data-cat="personal">🎯 Personal</div></div><button id="addFullTaskBtn" class="btn-primary">➕ Add</button></div><div class="grid md:grid-cols-3 gap-5"><div class="bg-black/20 p-3 rounded-2xl"><h3 class="font-bold text-purple-300 mb-2">📌 Current</h3><div id="pendingTasksList" class="space-y-2 max-h-80 overflow-y-auto"></div></div><div class="bg-black/20 p-3 rounded-2xl"><h3 class="font-bold text-green-400 mb-2">✅ Completed</h3><div id="completedTasksList" class="space-y-2 max-h-80 overflow-y-auto"></div></div><div class="bg-black/20 p-3 rounded-2xl"><h3 class="font-bold text-orange-400 mb-2">⚠️ Unfinished</h3><div id="unfinishedTasksFullList" class="space-y-2 max-h-80 overflow-y-auto"></div></div></div></div></div>
+        <div id="taskCenterPage" class="page-section">
+            <div class="card-sleek p-6">
+                <h2 class="text-2xl font-bold mb-4">🗂️ Task Manager</h2>
+                <div class="day-selector" id="fullDaySelector"></div>
+                <div class="flex flex-wrap gap-3 mb-5">
+                    <input type="text" id="fullTaskInput" placeholder="New task..." class="flex-1 bg-purple-950/40 border border-purple-500/40 rounded-2xl px-4 py-2">
+                    <div class="category-pills" id="fullCategoryPills">
+                        <div class="category-pill" data-cat="work">💼 Work</div>
+                        <div class="category-pill" data-cat="study">📚 Study</div>
+                        <div class="category-pill" data-cat="health">💪 Health</div>
+                        <div class="category-pill" data-cat="personal">🎯 Personal</div>
+                    </div>
+                    <button id="addFullTaskBtn" class="btn-primary">➕ Add</button>
+                    <button id="resetDayBtn" class="reset-day-btn">🗑 Reset Day</button>
+                </div>
+                <div class="grid md:grid-cols-3 gap-5">
+                    <div class="bg-black/20 p-3 rounded-2xl"><h3 class="font-bold text-purple-300 mb-2">📌 Current</h3><div id="pendingTasksList" class="space-y-2 max-h-80 overflow-y-auto"></div></div>
+                    <div class="bg-black/20 p-3 rounded-2xl"><h3 class="font-bold text-green-400 mb-2">✅ Completed</h3><div id="completedTasksList" class="space-y-2 max-h-80 overflow-y-auto"></div></div>
+                    <div class="bg-black/20 p-3 rounded-2xl"><h3 class="font-bold text-orange-400 mb-2">⚠️ Unfinished</h3><div id="unfinishedTasksFullList" class="space-y-2 max-h-80 overflow-y-auto"></div></div>
+                </div>
+            </div>
+        </div>
         <div id="forestPage" class="page-section"><div class="card-sleek p-5"><h2 class="text-2xl font-bold mb-4">🌳 Forest</h2><div id="forestGrid" class="forest-grid"></div><div id="forestStats" class="mt-4 text-center text-purple-300 text-sm"></div></div></div>
         <div id="analysisPage" class="page-section"><div class="analytics-card"><h2 class="text-xl font-bold mb-3">📈 Task Distribution</h2><div class="donut-legend-container"><div class="donut-wrapper"><canvas id="taskDonutChart"></canvas></div><div class="legend-wrapper"><div class="legend-item"><div class="legend-color" style="background:#22c55e"></div><span class="legend-text">Completed</span><span class="legend-percent" id="legendCompleted">0%</span></div><div class="legend-item"><div class="legend-color" style="background:#a855f7"></div><span class="legend-text">Current</span><span class="legend-percent" id="legendCurrent">0%</span></div><div class="legend-item"><div class="legend-color" style="background:#ef4444"></div><span class="legend-text">Unfinished</span><span class="legend-percent" id="legendUnfinished">0%</span></div></div></div><div id="taskStatsText" class="text-center text-xs text-purple-400 mt-2"></div></div><div class="made-by-divider"><span class="made-by-text">✦ M A D E  B Y  D I O ✦</span></div><div class="analytics-card"><h2 class="text-xl font-bold mb-3">📊 Focus Trends</h2><canvas id="focusChartLine"></canvas><div id="insightsBlock" class="mt-3 p-3 bg-purple-900/30 rounded-2xl text-center text-xs"></div></div></div>
     </div>
@@ -555,28 +626,155 @@
     import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     
     const auth = getAuth(); const db = getFirestore();
-    let currentUser = null, forest = [], tasks = [], unfinished = [], coins = 0;
+    let currentUser = null, forest = [], coins = 0;
     let timerSeconds = 0, timerTotal = 25 * 60, timerInterval = null, isRunning = false;
-    let timerStartTime = null, timerPausedDuration = 0, timerBaseSeconds = 0;
+    let timerStartTime = null, timerBaseSeconds = 0;
     let currentWidget = "cactus", selectedQuickCategory = "", selectedFullCategory = "";
     let taskDonutChart = null, lineChart = null;
     const ringCircumference = 2 * Math.PI * 118;
-    const roastMessages = ["أنت فاشل", "يا خول", "كمل يلا", "يا جبان", "فرخة"];
+    const roastMessages = ["أنت فاشل", "يا خول", "كمل يلا", "يا جبان", "فرخة 🐔"];
+    
+    // Daily Tasks Structure
+    let dailyTasks = {}; // { "2024-01-01": { tasks: [], unfinished: [] } }
+    let currentSelectedDate = new Date().toISOString().split('T')[0];
+    
+    // Helper functions
+    function getTodayDate() {
+        return new Date().toISOString().split('T')[0];
+    }
+    
+    function getDateString(date) {
+        return date.toISOString().split('T')[0];
+    }
+    
+    function getDayName(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('ar-EG', { weekday: 'short' });
+    }
+    
+    function getFormattedDate(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' });
+    }
+    
+    // Initialize daily tasks for a date
+    function initDailyTasks(dateStr) {
+        if (!dailyTasks[dateStr]) {
+            dailyTasks[dateStr] = {
+                tasks: [],
+                unfinished: []
+            };
+        }
+        return dailyTasks[dateStr];
+    }
+    
+    // Get current day's tasks
+    function getCurrentDayTasks() {
+        return initDailyTasks(currentSelectedDate);
+    }
+    
+    // Add task to current day
+    async function addTaskToDay(text, category) {
+        if (!text.trim()) return;
+        const dayData = getCurrentDayTasks();
+        dayData.tasks.push({
+            id: Date.now(),
+            text: text.trim(),
+            completed: false,
+            category,
+            createdAt: new Date().toISOString()
+        });
+        await saveDailyTasks();
+        updateUI();
+        showToast('Task added to ' + getFormattedDate(currentSelectedDate));
+    }
+    
+    // Toggle task completion
+    async function toggleTaskInDay(dateStr, taskId, checked) {
+        const dayData = initDailyTasks(dateStr);
+        const task = dayData.tasks.find(t => t.id === taskId);
+        if (task && task.completed !== checked) {
+            task.completed = checked;
+            task.completedAt = checked ? new Date().toISOString() : null;
+            await saveDailyTasks();
+            updateUI();
+            if (checked) showToast('Task completed! +🪙');
+        }
+    }
+    
+    // Delete task
+    async function deleteTaskFromDay(dateStr, taskId) {
+        const dayData = initDailyTasks(dateStr);
+        dayData.tasks = dayData.tasks.filter(t => t.id !== taskId);
+        await saveDailyTasks();
+        updateUI();
+        showToast('Task deleted');
+    }
+    
+    // Reset current day (clear all tasks)
+    async function resetCurrentDay() {
+        if (confirm(`⚠️ Are you sure you want to reset all tasks for ${getFormattedDate(currentSelectedDate)}?`)) {
+            dailyTasks[currentSelectedDate] = { tasks: [], unfinished: [] };
+            await saveDailyTasks();
+            updateUI();
+            addFlashEffect(document.getElementById('resetDayBtn'));
+            showToast('Day reset successfully');
+        }
+    }
+    
+    // Move unfinished tasks (runs daily check)
+    async function moveUnfinishedTasks() {
+        const today = getTodayDate();
+        for (const [dateStr, dayData] of Object.entries(dailyTasks)) {
+            if (dateStr !== today) {
+                const moved = [];
+                dayData.tasks = dayData.tasks.filter(task => {
+                    if (!task.completed) {
+                        moved.push(task);
+                        return false;
+                    }
+                    return true;
+                });
+                if (moved.length > 0) {
+                    dayData.unfinished.push(...moved.map(t => ({ ...t, movedAt: new Date().toISOString() })));
+                }
+            }
+        }
+        await saveDailyTasks();
+        if (Object.values(dailyTasks).some(d => d.unfinished.length > 0)) {
+            updateUI();
+        }
+    }
+    
+    // Save all daily tasks to Firebase
+    async function saveDailyTasks() {
+        if (!currentUser) return;
+        await setDoc(doc(db, "users", currentUser.uid, "data", "dailyTasks"), { dailyTasks });
+    }
+    
+    // Load daily tasks from Firebase
+    async function loadDailyTasks(uid) {
+        const docRef = doc(db, "users", uid, "data", "dailyTasks");
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            dailyTasks = docSnap.data().dailyTasks || {};
+        } else {
+            dailyTasks = {};
+        }
+        // Ensure today's date exists
+        initDailyTasks(getTodayDate());
+    }
     
     function addGlowEffect(button) {
         if (!button) return;
         button.classList.add('glow-effect');
-        setTimeout(() => {
-            button.classList.remove('glow-effect');
-        }, 600);
+        setTimeout(() => button.classList.remove('glow-effect'), 600);
     }
     
     function addFlashEffect(button) {
         if (!button) return;
         button.classList.add('flash-effect');
-        setTimeout(() => {
-            button.classList.remove('flash-effect');
-        }, 400);
+        setTimeout(() => button.classList.remove('flash-effect'), 400);
     }
     
     function getBadgeClass(category) {
@@ -601,39 +799,21 @@
     function showToast(msg) { let t = document.getElementById('toastMsg'); t.innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
     function celebrate(title, msg) { let p = document.createElement('div'); p.className = 'celebration-popup'; p.innerHTML = `<div class="text-5xl mb-2">🎉</div><h3 class="text-xl font-bold text-yellow-300">${title}</h3><p class="text-purple-200">${msg}</p>`; document.body.appendChild(p); setTimeout(() => p.remove(), 2800); }
     
-    async function saveData() { if (!currentUser) return; await setDoc(doc(db, "users", currentUser.uid, "data", "forest"), { forest }); await setDoc(doc(db, "users", currentUser.uid, "data", "tasks"), { tasks }); await setDoc(doc(db, "users", currentUser.uid, "data", "unfinished"), { unfinished }); await setDoc(doc(db, "users", currentUser.uid, "data", "coins"), { coins }); }
-    async function loadData(uid) { let f = await getDoc(doc(db, "users", uid, "data", "forest")); let t = await getDoc(doc(db, "users", uid, "data", "tasks")); let u = await getDoc(doc(db, "users", uid, "data", "unfinished")); let c = await getDoc(doc(db, "users", uid, "data", "coins")); forest = f.exists() ? f.data().forest || [] : []; tasks = t.exists() ? t.data().tasks || [] : []; unfinished = u.exists() ? u.data().unfinished || [] : []; coins = c.exists() ? c.data().coins || 0 : 0; updateUI(); }
-    
-    function checkAndMoveUnfinishedTasks() { 
-        let now = Date.now(); 
-        let moved = false; 
-        
-        tasks = tasks.filter(task => { 
-            if (!task.completed && task.createdAt) {
-                const taskTime = new Date(task.createdAt).getTime();
-                if (!isNaN(taskTime) && (now - taskTime) >= 24 * 3600000) { 
-                    unfinished.push({ ...task, movedAt: new Date().toISOString() }); 
-                    moved = true; 
-                    return false; 
-                }
-            }
-            return true; 
-        }); 
-        
-        if (moved) { 
-            saveData(); 
-            updateUI(); 
-            showToast('⏰ Old unfinished tasks moved to Unfinished'); 
-        } 
+    async function saveData() { 
+        if (!currentUser) return; 
+        await setDoc(doc(db, "users", currentUser.uid, "data", "forest"), { forest }); 
+        await setDoc(doc(db, "users", currentUser.uid, "data", "coins"), { coins }); 
+        await saveDailyTasks();
     }
     
-    function checkAndMoveOnVisibility() {
-        if (!document.hidden && currentUser) {
-            checkAndMoveUnfinishedTasks();
-        }
+    async function loadData(uid) { 
+        let f = await getDoc(doc(db, "users", uid, "data", "forest")); 
+        let c = await getDoc(doc(db, "users", uid, "data", "coins")); 
+        forest = f.exists() ? f.data().forest || [] : []; 
+        coins = c.exists() ? c.data().coins || 0 : 0; 
+        await loadDailyTasks(uid);
+        updateUI(); 
     }
-    
-    document.addEventListener('visibilitychange', checkAndMoveOnVisibility);
     
     function updateWidgets(progress) {
         let percent = progress * 100;
@@ -694,58 +874,40 @@
     
     function startTimer() { 
         if (isRunning || timerTotal === 0) return;
-        
         isRunning = true;
         timerStartTime = Date.now();
         timerBaseSeconds = timerSeconds;
-        
-        const startBtn = document.getElementById('startFocusBtn');
-        addFlashEffect(startBtn);
-        
+        addFlashEffect(document.getElementById('startFocusBtn'));
         document.getElementById('startFocusBtn').classList.add('hidden'); 
         document.getElementById('pauseFocusBtn').classList.remove('hidden'); 
         document.getElementById('abortFocusBtn').classList.remove('hidden');
-        
         if (timerInterval) clearInterval(timerInterval);
-        
         timerInterval = setInterval(() => {
             if (!isRunning) return;
-            
             const now = Date.now();
             const elapsed = Math.floor((now - timerStartTime) / 1000);
             timerSeconds = timerBaseSeconds + elapsed;
-            
             if (timerSeconds > timerTotal) timerSeconds = timerTotal;
-            
             updateModernTimerUI();
-            
-            if (timerSeconds >= timerTotal) { 
-                completeSession(); 
-            }
+            if (timerSeconds >= timerTotal) completeSession();
         }, 200);
     }
     
     function pauseTimer() { 
         if (!isRunning) return; 
-        
         const now = Date.now();
         const elapsedSinceStart = Math.floor((now - timerStartTime) / 1000);
         timerSeconds = timerBaseSeconds + elapsedSinceStart;
         if (timerSeconds > timerTotal) timerSeconds = timerTotal;
-        
         clearInterval(timerInterval); 
         isRunning = false; 
-        
         updateModernTimerUI();
-        
         let btn = document.getElementById('pauseFocusBtn'); 
         addGlowEffect(btn);
         btn.innerHTML = '▶ Resume'; 
-        
         const newBtn = btn.cloneNode(true);
         btn.parentNode.replaceChild(newBtn, btn);
         const freshBtn = document.getElementById('pauseFocusBtn');
-        
         freshBtn.onclick = () => {
             startTimer();
             freshBtn.innerHTML = '⏸ Pause';
@@ -757,14 +919,8 @@
         let elapsedSeconds = timerSeconds; 
         clearInterval(timerInterval); 
         isRunning = false; 
-        
-        const abortBtn = document.getElementById('abortFocusBtn');
-        addGlowEffect(abortBtn);
-        
-        if (elapsedSeconds > 15) { 
-            showRoastPopup(); 
-        }
-        
+        addGlowEffect(document.getElementById('abortFocusBtn'));
+        if (elapsedSeconds > 15) showRoastPopup();
         timerSeconds = 0; 
         timerStartTime = null;
         timerBaseSeconds = 0;
@@ -785,24 +941,24 @@
         }
     }
     
-    function renderTaskItem(task) { 
+    function renderTaskItem(task, dateStr) { 
         const categoryClass = getCategoryColor(task.category);
         const badgeClass = task.category ? getBadgeClass(task.category) : '';
         const categoryName = task.category ? task.category.charAt(0).toUpperCase() + task.category.slice(1) : '';
         return `<div class="checkbox-container ${categoryClass}" style="margin-bottom: 8px;">
-            <input type="checkbox" id="task_${task.id}" class="task-checkbox" ${task.completed ? 'checked' : ''} onchange="window.toggleTask(${task.id}, this.checked)" />
+            <input type="checkbox" id="task_${task.id}" class="task-checkbox" ${task.completed ? 'checked' : ''} onchange="window.toggleTaskGlobal('${dateStr}', ${task.id}, this.checked)" />
             <label for="task_${task.id}" class="checkbox-label" style="border-radius: 16px;">
                 <div class="checkbox-box">
                     <div class="checkbox-fill"></div>
                     <div class="checkmark"><svg viewBox="0 0 24 24" class="check-icon"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"></path></svg></div>
                 </div>
                 <span class="checkbox-text">${escapeHtml(task.text)} ${task.category ? `<span class="task-category-badge ${badgeClass}">${categoryName}</span>` : ''}</span>
-                <button onclick="event.stopPropagation(); window.deleteTask(${task.id})" class="delete-task-btn">🗑</button>
+                <button onclick="event.stopPropagation(); window.deleteTaskGlobal('${dateStr}', ${task.id})" class="delete-task-btn">🗑</button>
             </label>
         </div>`;
     }
     
-    function renderUnfinishedItem(task) { 
+    function renderUnfinishedItem(task, dateStr) { 
         const categoryClass = getCategoryColor(task.category);
         const badgeClass = task.category ? getBadgeClass(task.category) : '';
         const categoryName = task.category ? task.category.charAt(0).toUpperCase() + task.category.slice(1) : '';
@@ -812,16 +968,32 @@
                     <div class="checkbox-fill" style="background:#ef4444"></div>
                 </div>
                 <span class="checkbox-text" style="color:#fca5a5">⚠️ ${escapeHtml(task.text)} ${task.category ? `<span class="task-category-badge ${badgeClass}">${categoryName}</span>` : ''}</span>
-                <button onclick="window.deleteUnfinished(${task.id})" class="delete-task-btn">🗑</button>
+                <button onclick="event.stopPropagation(); window.deleteTaskGlobal('${dateStr}', ${task.id})" class="delete-task-btn">🗑</button>
             </div>
         </div>`;
     }
     
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m) { if(m === '&') return '&amp;'; if(m === '<') return '&lt;'; if(m === '>') return '&gt;'; return m; }); }
     
-    window.toggleTask = async (id, checked) => { let task = tasks.find(t => t.id === id); if(task && task.completed !== checked) { task.completed = checked; task.completedAt = checked ? new Date().toISOString() : null; await saveData(); updateUI(); if(checked) showToast('Task completed! +🪙'); } };
-    window.deleteTask = async (id) => { tasks = tasks.filter(t => t.id !== id); await saveData(); updateUI(); showToast('Task deleted'); };
-    window.deleteUnfinished = async (id) => { unfinished = unfinished.filter(t => t.id !== id); await saveData(); updateUI(); showToast('Unfinished removed'); };
+    // Global functions for window
+    window.toggleTaskGlobal = async (dateStr, taskId, checked) => {
+        const dayData = initDailyTasks(dateStr);
+        const task = dayData.tasks.find(t => t.id === taskId);
+        if (task && task.completed !== checked) {
+            task.completed = checked;
+            task.completedAt = checked ? new Date().toISOString() : null;
+            await saveDailyTasks();
+            updateUI();
+            if (checked) showToast('Task completed! +🪙');
+        }
+    };
+    window.deleteTaskGlobal = async (dateStr, taskId) => {
+        const dayData = initDailyTasks(dateStr);
+        dayData.tasks = dayData.tasks.filter(t => t.id !== taskId);
+        await saveDailyTasks();
+        updateUI();
+        showToast('Task deleted');
+    };
     window.deleteTree = async (id) => { forest = forest.filter(t => t.id !== id); await saveData(); updateUI(); showToast('Tree removed'); };
     
     function setupCategoryPills() { 
@@ -871,42 +1043,107 @@
     }
     
     function updateTaskAnalytics() { 
-        let completed = tasks.filter(t => t.completed).length, 
-            current = tasks.filter(t => !t.completed).length, 
-            unfinishedCount = unfinished.length, 
-            total = completed + current + unfinishedCount; 
-        let cp = total > 0 ? ((completed/total)*100).toFixed(1) : 0; 
-        let curp = total > 0 ? ((current/total)*100).toFixed(1) : 0; 
-        let unp = total > 0 ? ((unfinishedCount/total)*100).toFixed(1) : 0; 
-        document.getElementById('legendCompleted').innerText = `${cp}%`; 
-        document.getElementById('legendCurrent').innerText = `${curp}%`; 
-        document.getElementById('legendUnfinished').innerText = `${unp}%`; 
-        if (taskDonutChart) taskDonutChart.destroy(); 
-        let ctx = document.getElementById('taskDonutChart').getContext('2d'); 
-        taskDonutChart = new Chart(ctx, { 
-            type: 'doughnut', 
-            data: { 
-                labels: ['Completed', 'Current', 'Unfinished'], 
-                datasets: [{ 
-                    data: [completed, current, unfinishedCount], 
-                    backgroundColor: ['#22c55e', '#a855f7', '#ef4444'], 
-                    borderWidth: 0 
-                }] 
-            }, 
-            options: { 
-                responsive: true, 
-                maintainAspectRatio: true, 
-                cutout: '60%', 
-                plugins: { legend: { display: false } } 
-            } 
-        }); 
-        document.getElementById('taskStatsText').innerHTML = `📊 Total: ${total} tasks | ✅ ${completed} done | ⏳ ${current} current | ⚠️ ${unfinishedCount} unfinished`; 
+        let allTasks = [];
+        let allUnfinished = [];
+        for (const [date, dayData] of Object.entries(dailyTasks)) {
+            allTasks.push(...dayData.tasks);
+            allUnfinished.push(...dayData.unfinished);
+        }
+        let completed = allTasks.filter(t => t.completed).length;
+        let current = allTasks.filter(t => !t.completed).length;
+        let unfinishedCount = allUnfinished.length;
+        let total = completed + current + unfinishedCount;
+        let cp = total > 0 ? ((completed/total)*100).toFixed(1) : 0;
+        let curp = total > 0 ? ((current/total)*100).toFixed(1) : 0;
+        let unp = total > 0 ? ((unfinishedCount/total)*100).toFixed(1) : 0;
+        document.getElementById('legendCompleted').innerText = `${cp}%`;
+        document.getElementById('legendCurrent').innerText = `${curp}%`;
+        document.getElementById('legendUnfinished').innerText = `${unp}%`;
+        if (taskDonutChart) taskDonutChart.destroy();
+        let ctx = document.getElementById('taskDonutChart').getContext('2d');
+        taskDonutChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Completed', 'Current', 'Unfinished'],
+                datasets: [{ data: [completed, current, unfinishedCount], backgroundColor: ['#22c55e', '#a855f7', '#ef4444'], borderWidth: 0 }]
+            },
+            options: { responsive: true, maintainAspectRatio: true, cutout: '60%', plugins: { legend: { display: false } } }
+        });
+        document.getElementById('taskStatsText').innerHTML = `📊 Total: ${total} tasks | ✅ ${completed} done | ⏳ ${current} current | ⚠️ ${unfinishedCount} unfinished`;
     }
     
-    function updateUI() { document.getElementById('globalCoins').innerText = coins; document.getElementById('dashTotalTrees').innerText = forest.length; let totalHours = forest.reduce((s,t)=>s+(t.duration||0),0)/60; document.getElementById('dashTotalHours').innerText = totalHours.toFixed(1); let completedTasksCount = tasks.filter(t=>t.completed).length; document.getElementById('dashCompletedTasks').innerText = completedTasksCount; let todayTrees = forest.filter(t=>new Date(t.date).toDateString()===new Date().toDateString()).length; document.getElementById('dashStreak').innerText = todayTrees>0?1:0; let pending = tasks.filter(t=>!t.completed); document.getElementById('compactTaskList').innerHTML = pending.slice(0,5).map(renderTaskItem).join('') || '<div class="text-center text-purple-400/50 text-sm py-4">✨ No pending tasks</div>'; let totalAll = tasks.length + unfinished.length; document.getElementById('taskProgress').innerText = `${completedTasksCount}/${totalAll} completed`; document.getElementById('progressFill').style.width = totalAll ? (completedTasksCount/totalAll)*100+'%' : '0%'; document.getElementById('completedTasksListSmall').innerHTML = tasks.filter(t=>t.completed).slice(-5).map(renderTaskItem).join('') || '<div class="text-center text-purple-400/50 text-sm py-4">No completed tasks</div>'; document.getElementById('unfinishedTasksList').innerHTML = unfinished.slice(-5).map(renderUnfinishedItem).join('') || '<div class="text-center text-orange-400/50 text-sm py-4">✨ No unfinished tasks</div>'; document.getElementById('pendingTasksList').innerHTML = pending.map(renderTaskItem).join(''); document.getElementById('completedTasksList').innerHTML = tasks.filter(t=>t.completed).map(renderTaskItem).join(''); document.getElementById('unfinishedTasksFullList').innerHTML = unfinished.map(renderUnfinishedItem).join(''); document.getElementById('forestGrid').innerHTML = forest.slice().reverse().map(t=>`<div class="forest-card"><div class="text-3xl">🌲</div><div class="text-xs mt-1">${t.duration} min</div><div class="text-[10px]">${new Date(t.date).toLocaleDateString()}</div><button onclick="window.deleteTree(${t.id})" class="text-red-400 text-xs mt-1">🗑</button></div>`).join(''); let totalMins = forest.reduce((a,b)=>a+b.duration,0); document.getElementById('forestStats').innerHTML = `🌲 ${forest.length} trees · ${(totalMins/60).toFixed(1)} hours focus`; updateTaskAnalytics(); if (lineChart) lineChart.destroy(); let last7 = Array(7).fill(0); forest.forEach(t=>{ let d = new Date(t.date).getDay(); last7[d] += t.duration; }); let ctx = document.getElementById('focusChartLine').getContext('2d'); lineChart = new Chart(ctx, { type: 'line', data: { labels: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], datasets: [{ label: 'Focus Minutes', data: last7, borderColor: '#a78bfa', backgroundColor: 'rgba(167,139,250,0.1)', fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top', labels: { color: '#ddd', font: { size: 9 } } } } } }); document.getElementById('insightsBlock').innerHTML = `🌱 ${forest.length} trees · ${(totalMins/60).toFixed(1)} hours focused · ${unfinished.length} unfinished`; }
+    function renderDaySelector(containerId, isFullView = false) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        const today = getTodayDate();
+        const dates = [];
+        for (let i = -3; i <= 3; i++) {
+            const date = new Date();
+            date.setDate(date.getDate() + i);
+            dates.push(getDateString(date));
+        }
+        
+        container.innerHTML = dates.map(dateStr => `
+            <button class="day-btn ${dateStr === currentSelectedDate ? 'active' : ''} ${dateStr === today ? 'today' : ''}" data-date="${dateStr}">
+                ${getDayName(dateStr)}<br><span style="font-size:10px;">${getFormattedDate(dateStr)}</span>
+            </button>
+        `).join('');
+        
+        container.querySelectorAll('.day-btn').forEach(btn => {
+            btn.onclick = () => {
+                addFlashEffect(btn);
+                currentSelectedDate = btn.dataset.date;
+                renderDaySelector('daySelector', false);
+                renderDaySelector('fullDaySelector', true);
+                updateUI();
+            };
+        });
+    }
     
-    async function addTask(text, category) { if(!text.trim()) return; tasks.push({ id: Date.now(), text: text.trim(), completed: false, category, createdAt: new Date().toISOString() }); await saveData(); updateUI(); showToast('Task added'); }
+    function updateUI() { 
+        document.getElementById('globalCoins').innerText = coins;
+        document.getElementById('dashTotalTrees').innerText = forest.length;
+        let totalHours = forest.reduce((s,t)=>s+(t.duration||0),0)/60;
+        document.getElementById('dashTotalHours').innerText = totalHours.toFixed(1);
+        let todayTrees = forest.filter(t=>new Date(t.date).toDateString()===new Date().toDateString()).length;
+        document.getElementById('dashStreak').innerText = todayTrees>0?1:0;
+        
+        const dayData = getCurrentDayTasks();
+        const pending = dayData.tasks.filter(t => !t.completed);
+        const completed = dayData.tasks.filter(t => t.completed);
+        
+        document.getElementById('compactTaskList').innerHTML = pending.slice(0,5).map(t => renderTaskItem(t, currentSelectedDate)).join('') || '<div class="text-center text-purple-400/50 text-sm py-4">✨ No pending tasks</div>';
+        document.getElementById('dashCompletedTasks').innerText = completed.length;
+        
+        let totalAll = dayData.tasks.length + dayData.unfinished.length;
+        document.getElementById('taskProgress').innerText = `${completed.length}/${totalAll} completed`;
+        document.getElementById('progressFill').style.width = totalAll ? (completed.length/totalAll)*100+'%' : '0%';
+        
+        document.getElementById('completedTasksListSmall').innerHTML = completed.slice(-5).map(t => renderTaskItem(t, currentSelectedDate)).join('') || '<div class="text-center text-purple-400/50 text-sm py-4">No completed tasks</div>';
+        document.getElementById('unfinishedTasksList').innerHTML = dayData.unfinished.slice(-5).map(t => renderUnfinishedItem(t, currentSelectedDate)).join('') || '<div class="text-center text-orange-400/50 text-sm py-4">✨ No unfinished tasks</div>';
+        
+        document.getElementById('pendingTasksList').innerHTML = pending.map(t => renderTaskItem(t, currentSelectedDate)).join('');
+        document.getElementById('completedTasksList').innerHTML = completed.map(t => renderTaskItem(t, currentSelectedDate)).join('');
+        document.getElementById('unfinishedTasksFullList').innerHTML = dayData.unfinished.map(t => renderUnfinishedItem(t, currentSelectedDate)).join('');
+        
+        document.getElementById('forestGrid').innerHTML = forest.slice().reverse().map(t=>`<div class="forest-card"><div class="text-3xl">🌲</div><div class="text-xs mt-1">${t.duration} min</div><div class="text-[10px]">${new Date(t.date).toLocaleDateString()}</div><button onclick="window.deleteTree(${t.id})" class="text-red-400 text-xs mt-1">🗑</button></div>`).join('');
+        let totalMins = forest.reduce((a,b)=>a+b.duration,0);
+        document.getElementById('forestStats').innerHTML = `🌲 ${forest.length} trees · ${(totalMins/60).toFixed(1)} hours focus`;
+        
+        updateTaskAnalytics();
+        if (lineChart) lineChart.destroy();
+        let last7 = Array(7).fill(0);
+        forest.forEach(t=>{ let d = new Date(t.date).getDay(); last7[d] += t.duration; });
+        let ctx = document.getElementById('focusChartLine').getContext('2d');
+        lineChart = new Chart(ctx, { type: 'line', data: { labels: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], datasets: [{ label: 'Focus Minutes', data: last7, borderColor: '#a78bfa', backgroundColor: 'rgba(167,139,250,0.1)', fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top', labels: { color: '#ddd', font: { size: 9 } } } } } });
+        document.getElementById('insightsBlock').innerHTML = `🌱 ${forest.length} trees · ${(totalMins/60).toFixed(1)} hours focused`;
+        
+        renderDaySelector('daySelector', false);
+        renderDaySelector('fullDaySelector', true);
+    }
     
+    // Timer Controls
     const hoursInput = document.getElementById('hoursInputNew');
     const minsInput = document.getElementById('minutesInputNew');
     if (hoursInput && minsInput) {
@@ -937,10 +1174,7 @@
     if (viewFullBtn) {
         viewFullBtn.onclick = () => {
             addFlashEffect(viewFullBtn);
-            setTimeout(() => {
-                switchPage('taskCenter');
-                addGlowEffect(viewFullBtn);
-            }, 100);
+            setTimeout(() => switchPage('taskCenter'), 100);
         };
     }
     
@@ -949,14 +1183,15 @@
     document.getElementById('abortFocusBtn').onclick = abortTimer;
     document.getElementById('addQuickTaskBtn').onclick = () => { 
         addGlowEffect(document.getElementById('addQuickTaskBtn'));
-        addTask(document.getElementById('quickTaskInput').value, selectedQuickCategory); 
-        document.getElementById('quickTaskInput').value=''; 
+        addTaskToDay(document.getElementById('quickTaskInput').value, selectedQuickCategory); 
+        document.getElementById('quickTaskInput').value = ''; 
     };
     document.getElementById('addFullTaskBtn').onclick = () => { 
         addFlashEffect(document.getElementById('addFullTaskBtn'));
-        addTask(document.getElementById('fullTaskInput').value, selectedFullCategory); 
-        document.getElementById('fullTaskInput').value=''; 
+        addTaskToDay(document.getElementById('fullTaskInput').value, selectedFullCategory); 
+        document.getElementById('fullTaskInput').value = ''; 
     };
+    document.getElementById('resetDayBtn').onclick = () => resetCurrentDay();
     
     const spotifyBtn = document.getElementById('spotifyLocalBtn');
     if(spotifyBtn) {
@@ -1006,12 +1241,22 @@
     };
     
     setInterval(() => { 
-        if(currentUser && !document.hidden) {
-            checkAndMoveUnfinishedTasks(); 
-        }
-    }, 30000);
+        if(currentUser) moveUnfinishedTasks();
+    }, 3600000);
     
-    onAuthStateChanged(auth, async(user)=>{ if(user){ currentUser=user; await loadData(user.uid); document.getElementById('authOverlay').style.display='none'; document.getElementById('mainApp').style.display='block'; checkAndMoveUnfinishedTasks(); } else { document.getElementById('authOverlay').style.display='flex'; document.getElementById('mainApp').style.display='none'; } });
+    onAuthStateChanged(auth, async(user)=>{ 
+        if(user){ 
+            currentUser=user; 
+            await loadData(user.uid); 
+            document.getElementById('authOverlay').style.display='none'; 
+            document.getElementById('mainApp').style.display='block'; 
+            moveUnfinishedTasks();
+            updateUI(); 
+        } else { 
+            document.getElementById('authOverlay').style.display='flex'; 
+            document.getElementById('mainApp').style.display='none'; 
+        } 
+    });
     updateModernTimerUI(); switchWidget('cactus'); setupCategoryPills();
 </script>
 </body>
