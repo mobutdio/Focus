@@ -57,26 +57,17 @@
             position: relative;
             overflow: hidden;
         }
-        .btn-primary:hover { 
-            transform: scale(1.02);
-            box-shadow: 0 0 20px rgba(139, 92, 246, 0.8);
-        }
-        .btn-primary:active {
-            transform: scale(0.98);
-        }
+        .btn-primary:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(139, 92, 246, 0.8); }
+        .btn-primary:active { transform: scale(0.98); }
         
-        .glow-effect {
-            animation: btnGlow 0.6s ease-out;
-        }
+        .glow-effect { animation: btnGlow 0.6s ease-out; }
         @keyframes btnGlow {
             0% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7); transform: scale(1); }
             50% { box-shadow: 0 0 30px 10px rgba(139, 92, 246, 0.9); transform: scale(1.05); }
             100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0); transform: scale(1); }
         }
         
-        .flash-effect {
-            animation: btnFlash 0.4s ease-out;
-        }
+        .flash-effect { animation: btnFlash 0.4s ease-out; }
         @keyframes btnFlash {
             0% { box-shadow: 0 0 0 0 rgba(168, 85, 247, 0.8); background: linear-gradient(105deg, #a855f7, #c084fc); }
             50% { box-shadow: 0 0 40px 15px rgba(168, 85, 247, 1); background: linear-gradient(105deg, #c084fc, #e9d5ff); }
@@ -84,89 +75,65 @@
         }
         
         .btn-secondary { 
-            background: rgba(124, 58, 237, 0.2); 
-            border: 1px solid rgba(139, 92, 246, 0.5); 
-            border-radius: 44px; 
-            padding: 8px 20px; 
-            font-weight: 500; 
-            cursor: pointer; 
-            color: #ddd6fe; 
-            transition: all 0.3s ease;
+            background: rgba(124, 58, 237, 0.2); border: 1px solid rgba(139, 92, 246, 0.5); border-radius: 44px; padding: 8px 20px; font-weight: 500; cursor: pointer; color: #ddd6fe; transition: all 0.3s ease;
         }
-        .btn-secondary:hover { 
-            background: rgba(124, 58, 237, 0.4);
-            box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
-            transform: scale(1.02);
-        }
+        .btn-secondary:hover { background: rgba(124, 58, 237, 0.4); box-shadow: 0 0 15px rgba(139, 92, 246, 0.5); transform: scale(1.02); }
         
         .btn-danger { 
-            background: rgba(239, 68, 68, 0.2); 
-            border: 1px solid rgba(239, 68, 68, 0.5); 
-            border-radius: 44px; 
-            padding: 8px 20px; 
-            font-weight: 500; 
-            cursor: pointer; 
-            color: #fca5a5; 
-            transition: all 0.3s ease;
+            background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 44px; padding: 8px 20px; font-weight: 500; cursor: pointer; color: #fca5a5; transition: all 0.3s ease;
         }
-        .btn-danger:hover { 
-            background: rgba(239, 68, 68, 0.4);
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.5);
-            transform: scale(1.02);
-        }
+        .btn-danger:hover { background: rgba(239, 68, 68, 0.4); box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); transform: scale(1.02); }
         
-        /* Day Selector Styles */
-        .day-selector {
+        /* Navigation Arrows for Days */
+        .day-navigation {
             display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
             margin-bottom: 20px;
+            background: rgba(30, 20, 50, 0.5);
+            padding: 10px 20px;
+            border-radius: 60px;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+        .nav-arrow {
+            background: rgba(124, 58, 237, 0.3);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: #c084fc;
+            font-size: 1.2rem;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
             justify-content: center;
         }
-        .day-btn {
-            background: rgba(30, 20, 50, 0.5);
-            border: 1px solid rgba(139, 92, 246, 0.4);
-            border-radius: 40px;
-            padding: 8px 18px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: #c4b5fd;
-        }
-        .day-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 12px rgba(139,92,246,0.5);
-            background: rgba(124, 58, 237, 0.3);
-        }
-        .day-btn.active {
-            background: linear-gradient(105deg, #7c3aed, #a855f7);
+        .nav-arrow:hover {
+            background: #7c3aed;
             color: white;
-            border: none;
-            box-shadow: 0 0 15px rgba(139,92,246,0.6);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(124,58,237,0.6);
         }
-        .day-btn.today {
-            border: 2px solid #fbbf24;
-            box-shadow: 0 0 10px rgba(251,191,36,0.3);
+        .current-day-display {
+            text-align: center;
+            min-width: 180px;
         }
-        
-        /* Reset Day Button */
-        .reset-day-btn {
-            background: rgba(239, 68, 68, 0.2);
-            border: 1px solid rgba(239, 68, 68, 0.5);
-            border-radius: 40px;
-            padding: 6px 14px;
-            font-size: 11px;
-            font-weight: 500;
-            cursor: pointer;
-            color: #fca5a5;
-            transition: all 0.3s ease;
-            margin-left: 10px;
+        .current-day-name {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
         }
-        .reset-day-btn:hover {
-            background: rgba(239, 68, 68, 0.4);
-            transform: scale(1.02);
-            box-shadow: 0 0 10px rgba(239,68,68,0.4);
+        .current-day-date {
+            font-size: 0.7rem;
+            color: #c084fc;
+        }
+        .day-stats {
+            font-size: 0.7rem;
+            color: #a78bfa;
+            margin-top: 4px;
         }
         
         .view-full-btn {
@@ -570,13 +537,9 @@
                     </div></div></div>
                 <div><div class="card-sleek p-5 mb-5">
                     <div class="flex justify-between items-center mb-3">
-                        <h3 class="text-xl font-bold">📋 Daily Tasks</h3>
-                        <button id="viewFullBtn" class="view-full-btn">Full view →</button>
+                        <h3 class="text-xl font-bold">📋 Today's Tasks</h3>
+                        <button id="viewFullBtn" class="view-full-btn">History →</button>
                     </div>
-                    
-                    <!-- Day Selector -->
-                    <div class="day-selector" id="daySelector"></div>
-                    
                     <input type="text" id="quickTaskInput" placeholder="Write a task..." class="w-full bg-purple-950/40 border border-purple-500/40 rounded-2xl px-4 py-2">
                     <div class="category-pills" id="quickCategoryPills">
                         <div class="category-pill" data-cat="work">💼 Work</div>
@@ -585,7 +548,7 @@
                         <div class="category-pill" data-cat="personal">🎯 Personal</div>
                     </div>
                     <button id="addQuickTaskBtn" class="btn-secondary text-sm w-full mt-2">+ Add Task</button>
-                    <div class="auto-move-section"><p class="text-xs text-purple-300">⏰ Tasks are saved per day</p></div>
+                    <div class="auto-move-section"><p class="text-xs text-purple-300">⏰ Tasks are saved per day automatically</p></div>
                     <div class="mt-4 space-y-2 max-h-64 overflow-y-auto" id="compactTaskList"></div>
                     <div class="mt-3 text-xs text-purple-400"><span id="taskProgress">0/0 completed</span>
                     <div class="w-full h-1 bg-purple-900/50 rounded-full mt-1"><div id="progressFill" class="h-full bg-purple-500 w-0 rounded-full"></div></div></div>
@@ -595,8 +558,20 @@
             </div></div>
         <div id="taskCenterPage" class="page-section">
             <div class="card-sleek p-6">
-                <h2 class="text-2xl font-bold mb-4">🗂️ Task Manager</h2>
-                <div class="day-selector" id="fullDaySelector"></div>
+                <h2 class="text-2xl font-bold mb-4">🗂️ Task History</h2>
+                
+                <!-- Day Navigation with Arrows -->
+                <div class="day-navigation">
+                    <button id="prevDayBtn" class="nav-arrow">←</button>
+                    <div class="current-day-display">
+                        <div id="viewingDayName" class="current-day-name">Loading...</div>
+                        <div id="viewingDayDate" class="current-day-date"></div>
+                        <div id="viewingDayStats" class="day-stats"></div>
+                    </div>
+                    <button id="nextDayBtn" class="nav-arrow">→</button>
+                    <button id="goToTodayBtn" class="view-full-btn" style="margin-left: 10px;">Today</button>
+                </div>
+                
                 <div class="flex flex-wrap gap-3 mb-5">
                     <input type="text" id="fullTaskInput" placeholder="New task..." class="flex-1 bg-purple-950/40 border border-purple-500/40 rounded-2xl px-4 py-2">
                     <div class="category-pills" id="fullCategoryPills">
@@ -634,9 +609,9 @@
     const ringCircumference = 2 * Math.PI * 118;
     const roastMessages = ["أنت فاشل", "يا خول", "كمل يلا", "يا جبان", "فرخة 🐔"];
     
-    // Daily Tasks Structure
-    let dailyTasks = {}; // { "2024-01-01": { tasks: [], unfinished: [] } }
-    let currentSelectedDate = new Date().toISOString().split('T')[0];
+    // Daily Tasks Structure: { "2024-01-01": { tasks: [], unfinished: [] } }
+    let dailyTasks = {};
+    let viewingDate = new Date().toISOString().split('T')[0]; // Current viewing date in history page
     
     // Helper functions
     function getTodayDate() {
@@ -649,12 +624,17 @@
     
     function getDayName(dateStr) {
         const date = new Date(dateStr);
+        return date.toLocaleDateString('ar-EG', { weekday: 'long' });
+    }
+    
+    function getShortDayName(dateStr) {
+        const date = new Date(dateStr);
         return date.toLocaleDateString('ar-EG', { weekday: 'short' });
     }
     
     function getFormattedDate(dateStr) {
         const date = new Date(dateStr);
-        return date.toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' });
+        return date.toLocaleDateString('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' });
     }
     
     // Initialize daily tasks for a date
@@ -668,15 +648,21 @@
         return dailyTasks[dateStr];
     }
     
-    // Get current day's tasks
-    function getCurrentDayTasks() {
-        return initDailyTasks(currentSelectedDate);
+    // Get today's tasks
+    function getTodayTasks() {
+        const today = getTodayDate();
+        return initDailyTasks(today);
     }
     
-    // Add task to current day
-    async function addTaskToDay(text, category) {
+    // Get tasks for a specific date
+    function getTasksForDate(dateStr) {
+        return initDailyTasks(dateStr);
+    }
+    
+    // Add task to a specific date
+    async function addTaskToDate(dateStr, text, category) {
         if (!text.trim()) return;
-        const dayData = getCurrentDayTasks();
+        const dayData = initDailyTasks(dateStr);
         dayData.tasks.push({
             id: Date.now(),
             text: text.trim(),
@@ -686,7 +672,11 @@
         });
         await saveDailyTasks();
         updateUI();
-        showToast('Task added to ' + getFormattedDate(currentSelectedDate));
+        if (dateStr === getTodayDate()) {
+            showToast('Task added to today');
+        } else {
+            showToast(`Task added to ${getShortDayName(dateStr)}`);
+        }
     }
     
     // Toggle task completion
@@ -711,10 +701,10 @@
         showToast('Task deleted');
     }
     
-    // Reset current day (clear all tasks)
-    async function resetCurrentDay() {
-        if (confirm(`⚠️ Are you sure you want to reset all tasks for ${getFormattedDate(currentSelectedDate)}?`)) {
-            dailyTasks[currentSelectedDate] = { tasks: [], unfinished: [] };
+    // Reset a specific day
+    async function resetDay(dateStr) {
+        if (confirm(`⚠️ Are you sure you want to reset all tasks for ${getDayName(dateStr)} ${getFormattedDate(dateStr)}?`)) {
+            dailyTasks[dateStr] = { tasks: [], unfinished: [] };
             await saveDailyTasks();
             updateUI();
             addFlashEffect(document.getElementById('resetDayBtn'));
@@ -741,9 +731,7 @@
             }
         }
         await saveDailyTasks();
-        if (Object.values(dailyTasks).some(d => d.unfinished.length > 0)) {
-            updateUI();
-        }
+        updateUI();
     }
     
     // Save all daily tasks to Firebase
@@ -1072,36 +1060,8 @@
         document.getElementById('taskStatsText').innerHTML = `📊 Total: ${total} tasks | ✅ ${completed} done | ⏳ ${current} current | ⚠️ ${unfinishedCount} unfinished`;
     }
     
-    function renderDaySelector(containerId, isFullView = false) {
-        const container = document.getElementById(containerId);
-        if (!container) return;
-        
-        const today = getTodayDate();
-        const dates = [];
-        for (let i = -3; i <= 3; i++) {
-            const date = new Date();
-            date.setDate(date.getDate() + i);
-            dates.push(getDateString(date));
-        }
-        
-        container.innerHTML = dates.map(dateStr => `
-            <button class="day-btn ${dateStr === currentSelectedDate ? 'active' : ''} ${dateStr === today ? 'today' : ''}" data-date="${dateStr}">
-                ${getDayName(dateStr)}<br><span style="font-size:10px;">${getFormattedDate(dateStr)}</span>
-            </button>
-        `).join('');
-        
-        container.querySelectorAll('.day-btn').forEach(btn => {
-            btn.onclick = () => {
-                addFlashEffect(btn);
-                currentSelectedDate = btn.dataset.date;
-                renderDaySelector('daySelector', false);
-                renderDaySelector('fullDaySelector', true);
-                updateUI();
-            };
-        });
-    }
-    
     function updateUI() { 
+        // Update dashboard
         document.getElementById('globalCoins').innerText = coins;
         document.getElementById('dashTotalTrees').innerText = forest.length;
         let totalHours = forest.reduce((s,t)=>s+(t.duration||0),0)/60;
@@ -1109,24 +1069,38 @@
         let todayTrees = forest.filter(t=>new Date(t.date).toDateString()===new Date().toDateString()).length;
         document.getElementById('dashStreak').innerText = todayTrees>0?1:0;
         
-        const dayData = getCurrentDayTasks();
-        const pending = dayData.tasks.filter(t => !t.completed);
-        const completed = dayData.tasks.filter(t => t.completed);
+        // Today's tasks (Focus page)
+        const todayTasks = getTodayTasks();
+        const todayPending = todayTasks.tasks.filter(t => !t.completed);
+        const todayCompleted = todayTasks.tasks.filter(t => t.completed);
         
-        document.getElementById('compactTaskList').innerHTML = pending.slice(0,5).map(t => renderTaskItem(t, currentSelectedDate)).join('') || '<div class="text-center text-purple-400/50 text-sm py-4">✨ No pending tasks</div>';
-        document.getElementById('dashCompletedTasks').innerText = completed.length;
+        document.getElementById('compactTaskList').innerHTML = todayPending.slice(0,5).map(t => renderTaskItem(t, getTodayDate())).join('') || '<div class="text-center text-purple-400/50 text-sm py-4">✨ No tasks for today</div>';
+        document.getElementById('dashCompletedTasks').innerText = todayCompleted.length;
         
-        let totalAll = dayData.tasks.length + dayData.unfinished.length;
-        document.getElementById('taskProgress').innerText = `${completed.length}/${totalAll} completed`;
-        document.getElementById('progressFill').style.width = totalAll ? (completed.length/totalAll)*100+'%' : '0%';
+        let totalToday = todayTasks.tasks.length + todayTasks.unfinished.length;
+        document.getElementById('taskProgress').innerText = `${todayCompleted.length}/${totalToday} completed`;
+        document.getElementById('progressFill').style.width = totalToday ? (todayCompleted.length/totalToday)*100+'%' : '0%';
         
-        document.getElementById('completedTasksListSmall').innerHTML = completed.slice(-5).map(t => renderTaskItem(t, currentSelectedDate)).join('') || '<div class="text-center text-purple-400/50 text-sm py-4">No completed tasks</div>';
-        document.getElementById('unfinishedTasksList').innerHTML = dayData.unfinished.slice(-5).map(t => renderUnfinishedItem(t, currentSelectedDate)).join('') || '<div class="text-center text-orange-400/50 text-sm py-4">✨ No unfinished tasks</div>';
+        document.getElementById('completedTasksListSmall').innerHTML = todayCompleted.slice(-5).map(t => renderTaskItem(t, getTodayDate())).join('') || '<div class="text-center text-purple-400/50 text-sm py-4">No completed tasks</div>';
+        document.getElementById('unfinishedTasksList').innerHTML = todayTasks.unfinished.slice(-5).map(t => renderUnfinishedItem(t, getTodayDate())).join('') || '<div class="text-center text-orange-400/50 text-sm py-4">✨ No unfinished tasks</div>';
         
-        document.getElementById('pendingTasksList').innerHTML = pending.map(t => renderTaskItem(t, currentSelectedDate)).join('');
-        document.getElementById('completedTasksList').innerHTML = completed.map(t => renderTaskItem(t, currentSelectedDate)).join('');
-        document.getElementById('unfinishedTasksFullList').innerHTML = dayData.unfinished.map(t => renderUnfinishedItem(t, currentSelectedDate)).join('');
+        // History page (viewing date)
+        const viewingData = getTasksForDate(viewingDate);
+        const viewingPending = viewingData.tasks.filter(t => !t.completed);
+        const viewingCompleted = viewingData.tasks.filter(t => t.completed);
         
+        document.getElementById('pendingTasksList').innerHTML = viewingPending.map(t => renderTaskItem(t, viewingDate)).join('') || '<div class="text-center text-purple-400/50 text-sm py-4">📭 No pending tasks</div>';
+        document.getElementById('completedTasksList').innerHTML = viewingCompleted.map(t => renderTaskItem(t, viewingDate)).join('') || '<div class="text-center text-purple-400/50 text-sm py-4">📭 No completed tasks</div>';
+        document.getElementById('unfinishedTasksFullList').innerHTML = viewingData.unfinished.map(t => renderUnfinishedItem(t, viewingDate)).join('') || '<div class="text-center text-purple-400/50 text-sm py-4">📭 No unfinished tasks</div>';
+        
+        // Update viewing header
+        document.getElementById('viewingDayName').innerHTML = getDayName(viewingDate);
+        document.getElementById('viewingDayDate').innerHTML = getFormattedDate(viewingDate);
+        const totalTasks = viewingData.tasks.length;
+        const completedCount = viewingCompleted.length;
+        document.getElementById('viewingDayStats').innerHTML = `📋 ${totalTasks} tasks · ✅ ${completedCount} completed · ⚠️ ${viewingData.unfinished.length} unfinished`;
+        
+        // Forest
         document.getElementById('forestGrid').innerHTML = forest.slice().reverse().map(t=>`<div class="forest-card"><div class="text-3xl">🌲</div><div class="text-xs mt-1">${t.duration} min</div><div class="text-[10px]">${new Date(t.date).toLocaleDateString()}</div><button onclick="window.deleteTree(${t.id})" class="text-red-400 text-xs mt-1">🗑</button></div>`).join('');
         let totalMins = forest.reduce((a,b)=>a+b.duration,0);
         document.getElementById('forestStats').innerHTML = `🌲 ${forest.length} trees · ${(totalMins/60).toFixed(1)} hours focus`;
@@ -1138,9 +1112,30 @@
         let ctx = document.getElementById('focusChartLine').getContext('2d');
         lineChart = new Chart(ctx, { type: 'line', data: { labels: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'], datasets: [{ label: 'Focus Minutes', data: last7, borderColor: '#a78bfa', backgroundColor: 'rgba(167,139,250,0.1)', fill: true, tension: 0.3 }] }, options: { responsive: true, maintainAspectRatio: true, plugins: { legend: { position: 'top', labels: { color: '#ddd', font: { size: 9 } } } } } });
         document.getElementById('insightsBlock').innerHTML = `🌱 ${forest.length} trees · ${(totalMins/60).toFixed(1)} hours focused`;
-        
-        renderDaySelector('daySelector', false);
-        renderDaySelector('fullDaySelector', true);
+    }
+    
+    // Navigation functions for history page
+    function goToPrevDay() {
+        const date = new Date(viewingDate);
+        date.setDate(date.getDate() - 1);
+        viewingDate = getDateString(date);
+        addGlowEffect(document.getElementById('prevDayBtn'));
+        updateUI();
+    }
+    
+    function goToNextDay() {
+        const date = new Date(viewingDate);
+        date.setDate(date.getDate() + 1);
+        viewingDate = getDateString(date);
+        addGlowEffect(document.getElementById('nextDayBtn'));
+        updateUI();
+    }
+    
+    function goToToday() {
+        viewingDate = getTodayDate();
+        addFlashEffect(document.getElementById('goToTodayBtn'));
+        updateUI();
+        showToast('Showing today\'s tasks');
     }
     
     // Timer Controls
@@ -1174,6 +1169,8 @@
     if (viewFullBtn) {
         viewFullBtn.onclick = () => {
             addFlashEffect(viewFullBtn);
+            viewingDate = getTodayDate();
+            updateUI();
             setTimeout(() => switchPage('taskCenter'), 100);
         };
     }
@@ -1183,15 +1180,20 @@
     document.getElementById('abortFocusBtn').onclick = abortTimer;
     document.getElementById('addQuickTaskBtn').onclick = () => { 
         addGlowEffect(document.getElementById('addQuickTaskBtn'));
-        addTaskToDay(document.getElementById('quickTaskInput').value, selectedQuickCategory); 
+        addTaskToDate(getTodayDate(), document.getElementById('quickTaskInput').value, selectedQuickCategory); 
         document.getElementById('quickTaskInput').value = ''; 
     };
     document.getElementById('addFullTaskBtn').onclick = () => { 
         addFlashEffect(document.getElementById('addFullTaskBtn'));
-        addTaskToDay(document.getElementById('fullTaskInput').value, selectedFullCategory); 
+        addTaskToDate(viewingDate, document.getElementById('fullTaskInput').value, selectedFullCategory); 
         document.getElementById('fullTaskInput').value = ''; 
     };
-    document.getElementById('resetDayBtn').onclick = () => resetCurrentDay();
+    document.getElementById('resetDayBtn').onclick = () => resetDay(viewingDate);
+    
+    // Navigation buttons
+    document.getElementById('prevDayBtn').onclick = goToPrevDay;
+    document.getElementById('nextDayBtn').onclick = goToNextDay;
+    document.getElementById('goToTodayBtn').onclick = goToToday;
     
     const spotifyBtn = document.getElementById('spotifyLocalBtn');
     if(spotifyBtn) {
@@ -1207,6 +1209,10 @@
         document.getElementById(page+'Page').classList.add('active'); 
         document.querySelectorAll('.link').forEach(l=>l.classList.remove('active')); 
         document.querySelector(`.link[data-page="${page}"]`).classList.add('active'); 
+        if (page === 'taskCenter') {
+            viewingDate = getTodayDate();
+            updateUI();
+        }
     };
     
     document.querySelectorAll('.link').forEach(link => {
@@ -1251,6 +1257,7 @@
             document.getElementById('authOverlay').style.display='none'; 
             document.getElementById('mainApp').style.display='block'; 
             moveUnfinishedTasks();
+            viewingDate = getTodayDate();
             updateUI(); 
         } else { 
             document.getElementById('authOverlay').style.display='flex'; 
