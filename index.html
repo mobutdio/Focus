@@ -84,56 +84,66 @@
         }
         .btn-danger:hover { background: rgba(239, 68, 68, 0.4); box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); transform: scale(1.02); }
         
-        /* Navigation Arrows for Days */
-        .day-navigation {
+        /* Day Navigation - Compact Style */
+        .day-nav-compact {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 15px;
-            margin-bottom: 20px;
+            justify-content: flex-start;
+            gap: 6px;
             background: rgba(30, 20, 50, 0.5);
-            padding: 10px 20px;
-            border-radius: 60px;
+            padding: 4px 10px;
+            border-radius: 40px;
             border: 1px solid rgba(139, 92, 246, 0.3);
+            margin-bottom: 15px;
+            width: fit-content;
         }
-        .nav-arrow {
+        .nav-arrow-compact {
             background: rgba(124, 58, 237, 0.3);
             border: none;
-            width: 40px;
-            height: 40px;
+            width: 28px;
+            height: 28px;
             border-radius: 50%;
             cursor: pointer;
             color: #c084fc;
-            font-size: 1.2rem;
+            font-size: 12px;
             font-weight: bold;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
         }
-        .nav-arrow:hover {
+        .nav-arrow-compact:hover {
             background: #7c3aed;
             color: white;
             transform: scale(1.05);
-            box-shadow: 0 0 15px rgba(124,58,237,0.6);
         }
-        .current-day-display {
+        .today-btn-compact {
+            background: rgba(124, 58, 237, 0.2);
+            border: 1px solid rgba(139, 92, 246, 0.5);
+            border-radius: 40px;
+            padding: 3px 10px;
+            font-size: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            color: #c4b5fd;
+            transition: all 0.3s ease;
+        }
+        .today-btn-compact:hover {
+            background: rgba(124, 58, 237, 0.5);
+            color: white;
+        }
+        .current-day-compact {
             text-align: center;
-            min-width: 180px;
+            min-width: 70px;
         }
-        .current-day-name {
-            font-size: 1.2rem;
+        .current-day-name-compact {
+            font-size: 11px;
             font-weight: 700;
             color: white;
         }
-        .current-day-date {
-            font-size: 0.7rem;
+        .current-day-date-compact {
+            font-size: 8px;
             color: #c084fc;
-        }
-        .day-stats {
-            font-size: 0.7rem;
-            color: #a78bfa;
-            margin-top: 4px;
         }
         
         .view-full-btn {
@@ -379,10 +389,15 @@
             margin: 0;
         }
         
-        .task-category-work { border-right: 4px solid #3b82f6; background: rgba(59, 130, 246, 0.1); border-radius: 16px; }
-        .task-category-study { border-right: 4px solid #10b981; background: rgba(16, 185, 129, 0.1); border-radius: 16px; }
-        .task-category-health { border-right: 4px solid #ef4444; background: rgba(239, 68, 68, 0.1); border-radius: 16px; }
-        .task-category-personal { border-right: 4px solid #f59e0b; background: rgba(245, 158, 11, 0.1); border-radius: 16px; }
+        /* Task Category Colors - Clean left border using pseudo-element (NO white lines) */
+        .task-category-work { position: relative; background: rgba(59, 130, 246, 0.1); border-radius: 16px; overflow: hidden; }
+        .task-category-work::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: #3b82f6; }
+        .task-category-study { position: relative; background: rgba(16, 185, 129, 0.1); border-radius: 16px; overflow: hidden; }
+        .task-category-study::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: #10b981; }
+        .task-category-health { position: relative; background: rgba(239, 68, 68, 0.1); border-radius: 16px; overflow: hidden; }
+        .task-category-health::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: #ef4444; }
+        .task-category-personal { position: relative; background: rgba(245, 158, 11, 0.1); border-radius: 16px; overflow: hidden; }
+        .task-category-personal::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: #f59e0b; }
         
         .badge-work { background: rgba(59, 130, 246, 0.2); color: #60a5fa; border: 1px solid #3b82f6; }
         .badge-study { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }
@@ -560,16 +575,15 @@
             <div class="card-sleek p-6">
                 <h2 class="text-2xl font-bold mb-4">🗂️ Task History</h2>
                 
-                <!-- Day Navigation with Arrows -->
-                <div class="day-navigation">
-                    <button id="prevDayBtn" class="nav-arrow">←</button>
-                    <div class="current-day-display">
-                        <div id="viewingDayName" class="current-day-name">Loading...</div>
-                        <div id="viewingDayDate" class="current-day-date"></div>
-                        <div id="viewingDayStats" class="day-stats"></div>
+                <!-- Compact Day Navigation -->
+                <div class="day-nav-compact">
+                    <button id="prevDayBtn" class="nav-arrow-compact">←</button>
+                    <div class="current-day-compact">
+                        <div id="viewingDayName" class="current-day-name-compact">Loading...</div>
+                        <div id="viewingDayDate" class="current-day-date-compact"></div>
                     </div>
-                    <button id="nextDayBtn" class="nav-arrow">→</button>
-                    <button id="goToTodayBtn" class="view-full-btn" style="margin-left: 10px;">Today</button>
+                    <button id="nextDayBtn" class="nav-arrow-compact">→</button>
+                    <button id="goToTodayBtn" class="today-btn-compact">Today</button>
                 </div>
                 
                 <div class="flex flex-wrap gap-3 mb-5">
@@ -581,7 +595,6 @@
                         <div class="category-pill" data-cat="personal">🎯 Personal</div>
                     </div>
                     <button id="addFullTaskBtn" class="btn-primary">➕ Add</button>
-                    <button id="resetDayBtn" class="reset-day-btn">🗑 Reset Day</button>
                 </div>
                 <div class="grid md:grid-cols-3 gap-5">
                     <div class="bg-black/20 p-3 rounded-2xl"><h3 class="font-bold text-purple-300 mb-2">📌 Current</h3><div id="pendingTasksList" class="space-y-2 max-h-80 overflow-y-auto"></div></div>
@@ -609,11 +622,10 @@
     const ringCircumference = 2 * Math.PI * 118;
     const roastMessages = ["أنت فاشل", "يا خول", "كمل يلا", "يا جبان", "فرخة 🐔"];
     
-    // Daily Tasks Structure: { "2024-01-01": { tasks: [], unfinished: [] } }
+    // Daily Tasks Structure
     let dailyTasks = {};
-    let viewingDate = new Date().toISOString().split('T')[0]; // Current viewing date in history page
+    let viewingDate = new Date().toISOString().split('T')[0];
     
-    // Helper functions
     function getTodayDate() {
         return new Date().toISOString().split('T')[0];
     }
@@ -634,32 +646,24 @@
     
     function getFormattedDate(dateStr) {
         const date = new Date(dateStr);
-        return date.toLocaleDateString('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' });
+        return date.toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' });
     }
     
-    // Initialize daily tasks for a date
     function initDailyTasks(dateStr) {
         if (!dailyTasks[dateStr]) {
-            dailyTasks[dateStr] = {
-                tasks: [],
-                unfinished: []
-            };
+            dailyTasks[dateStr] = { tasks: [], unfinished: [] };
         }
         return dailyTasks[dateStr];
     }
     
-    // Get today's tasks
     function getTodayTasks() {
-        const today = getTodayDate();
-        return initDailyTasks(today);
+        return initDailyTasks(getTodayDate());
     }
     
-    // Get tasks for a specific date
     function getTasksForDate(dateStr) {
         return initDailyTasks(dateStr);
     }
     
-    // Add task to a specific date
     async function addTaskToDate(dateStr, text, category) {
         if (!text.trim()) return;
         const dayData = initDailyTasks(dateStr);
@@ -672,14 +676,9 @@
         });
         await saveDailyTasks();
         updateUI();
-        if (dateStr === getTodayDate()) {
-            showToast('Task added to today');
-        } else {
-            showToast(`Task added to ${getShortDayName(dateStr)}`);
-        }
+        showToast(dateStr === getTodayDate() ? 'Task added to today' : `Task added to ${getShortDayName(dateStr)}`);
     }
     
-    // Toggle task completion
     async function toggleTaskInDay(dateStr, taskId, checked) {
         const dayData = initDailyTasks(dateStr);
         const task = dayData.tasks.find(t => t.id === taskId);
@@ -692,7 +691,6 @@
         }
     }
     
-    // Delete task
     async function deleteTaskFromDay(dateStr, taskId) {
         const dayData = initDailyTasks(dateStr);
         dayData.tasks = dayData.tasks.filter(t => t.id !== taskId);
@@ -701,18 +699,6 @@
         showToast('Task deleted');
     }
     
-    // Reset a specific day
-    async function resetDay(dateStr) {
-        if (confirm(`⚠️ Are you sure you want to reset all tasks for ${getDayName(dateStr)} ${getFormattedDate(dateStr)}?`)) {
-            dailyTasks[dateStr] = { tasks: [], unfinished: [] };
-            await saveDailyTasks();
-            updateUI();
-            addFlashEffect(document.getElementById('resetDayBtn'));
-            showToast('Day reset successfully');
-        }
-    }
-    
-    // Move unfinished tasks (runs daily check)
     async function moveUnfinishedTasks() {
         const today = getTodayDate();
         for (const [dateStr, dayData] of Object.entries(dailyTasks)) {
@@ -734,22 +720,15 @@
         updateUI();
     }
     
-    // Save all daily tasks to Firebase
     async function saveDailyTasks() {
         if (!currentUser) return;
         await setDoc(doc(db, "users", currentUser.uid, "data", "dailyTasks"), { dailyTasks });
     }
     
-    // Load daily tasks from Firebase
     async function loadDailyTasks(uid) {
         const docRef = doc(db, "users", uid, "data", "dailyTasks");
         const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-            dailyTasks = docSnap.data().dailyTasks || {};
-        } else {
-            dailyTasks = {};
-        }
-        // Ensure today's date exists
+        dailyTasks = docSnap.exists() ? docSnap.data().dailyTasks || {} : {};
         initDailyTasks(getTodayDate());
     }
     
@@ -963,24 +942,11 @@
     
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m) { if(m === '&') return '&amp;'; if(m === '<') return '&lt;'; if(m === '>') return '&gt;'; return m; }); }
     
-    // Global functions for window
     window.toggleTaskGlobal = async (dateStr, taskId, checked) => {
-        const dayData = initDailyTasks(dateStr);
-        const task = dayData.tasks.find(t => t.id === taskId);
-        if (task && task.completed !== checked) {
-            task.completed = checked;
-            task.completedAt = checked ? new Date().toISOString() : null;
-            await saveDailyTasks();
-            updateUI();
-            if (checked) showToast('Task completed! +🪙');
-        }
+        await toggleTaskInDay(dateStr, taskId, checked);
     };
     window.deleteTaskGlobal = async (dateStr, taskId) => {
-        const dayData = initDailyTasks(dateStr);
-        dayData.tasks = dayData.tasks.filter(t => t.id !== taskId);
-        await saveDailyTasks();
-        updateUI();
-        showToast('Task deleted');
+        await deleteTaskFromDay(dateStr, taskId);
     };
     window.deleteTree = async (id) => { forest = forest.filter(t => t.id !== id); await saveData(); updateUI(); showToast('Tree removed'); };
     
@@ -1051,17 +1017,13 @@
         let ctx = document.getElementById('taskDonutChart').getContext('2d');
         taskDonutChart = new Chart(ctx, {
             type: 'doughnut',
-            data: {
-                labels: ['Completed', 'Current', 'Unfinished'],
-                datasets: [{ data: [completed, current, unfinishedCount], backgroundColor: ['#22c55e', '#a855f7', '#ef4444'], borderWidth: 0 }]
-            },
+            data: { labels: ['Completed', 'Current', 'Unfinished'], datasets: [{ data: [completed, current, unfinishedCount], backgroundColor: ['#22c55e', '#a855f7', '#ef4444'], borderWidth: 0 }] },
             options: { responsive: true, maintainAspectRatio: true, cutout: '60%', plugins: { legend: { display: false } } }
         });
         document.getElementById('taskStatsText').innerHTML = `📊 Total: ${total} tasks | ✅ ${completed} done | ⏳ ${current} current | ⚠️ ${unfinishedCount} unfinished`;
     }
     
     function updateUI() { 
-        // Update dashboard
         document.getElementById('globalCoins').innerText = coins;
         document.getElementById('dashTotalTrees').innerText = forest.length;
         let totalHours = forest.reduce((s,t)=>s+(t.duration||0),0)/60;
@@ -1069,7 +1031,6 @@
         let todayTrees = forest.filter(t=>new Date(t.date).toDateString()===new Date().toDateString()).length;
         document.getElementById('dashStreak').innerText = todayTrees>0?1:0;
         
-        // Today's tasks (Focus page)
         const todayTasks = getTodayTasks();
         const todayPending = todayTasks.tasks.filter(t => !t.completed);
         const todayCompleted = todayTasks.tasks.filter(t => t.completed);
@@ -1084,7 +1045,6 @@
         document.getElementById('completedTasksListSmall').innerHTML = todayCompleted.slice(-5).map(t => renderTaskItem(t, getTodayDate())).join('') || '<div class="text-center text-purple-400/50 text-sm py-4">No completed tasks</div>';
         document.getElementById('unfinishedTasksList').innerHTML = todayTasks.unfinished.slice(-5).map(t => renderUnfinishedItem(t, getTodayDate())).join('') || '<div class="text-center text-orange-400/50 text-sm py-4">✨ No unfinished tasks</div>';
         
-        // History page (viewing date)
         const viewingData = getTasksForDate(viewingDate);
         const viewingPending = viewingData.tasks.filter(t => !t.completed);
         const viewingCompleted = viewingData.tasks.filter(t => t.completed);
@@ -1093,14 +1053,9 @@
         document.getElementById('completedTasksList').innerHTML = viewingCompleted.map(t => renderTaskItem(t, viewingDate)).join('') || '<div class="text-center text-purple-400/50 text-sm py-4">📭 No completed tasks</div>';
         document.getElementById('unfinishedTasksFullList').innerHTML = viewingData.unfinished.map(t => renderUnfinishedItem(t, viewingDate)).join('') || '<div class="text-center text-purple-400/50 text-sm py-4">📭 No unfinished tasks</div>';
         
-        // Update viewing header
         document.getElementById('viewingDayName').innerHTML = getDayName(viewingDate);
         document.getElementById('viewingDayDate').innerHTML = getFormattedDate(viewingDate);
-        const totalTasks = viewingData.tasks.length;
-        const completedCount = viewingCompleted.length;
-        document.getElementById('viewingDayStats').innerHTML = `📋 ${totalTasks} tasks · ✅ ${completedCount} completed · ⚠️ ${viewingData.unfinished.length} unfinished`;
         
-        // Forest
         document.getElementById('forestGrid').innerHTML = forest.slice().reverse().map(t=>`<div class="forest-card"><div class="text-3xl">🌲</div><div class="text-xs mt-1">${t.duration} min</div><div class="text-[10px]">${new Date(t.date).toLocaleDateString()}</div><button onclick="window.deleteTree(${t.id})" class="text-red-400 text-xs mt-1">🗑</button></div>`).join('');
         let totalMins = forest.reduce((a,b)=>a+b.duration,0);
         document.getElementById('forestStats').innerHTML = `🌲 ${forest.length} trees · ${(totalMins/60).toFixed(1)} hours focus`;
@@ -1114,7 +1069,6 @@
         document.getElementById('insightsBlock').innerHTML = `🌱 ${forest.length} trees · ${(totalMins/60).toFixed(1)} hours focused`;
     }
     
-    // Navigation functions for history page
     function goToPrevDay() {
         const date = new Date(viewingDate);
         date.setDate(date.getDate() - 1);
@@ -1138,7 +1092,6 @@
         showToast('Showing today\'s tasks');
     }
     
-    // Timer Controls
     const hoursInput = document.getElementById('hoursInputNew');
     const minsInput = document.getElementById('minutesInputNew');
     if (hoursInput && minsInput) {
@@ -1188,9 +1141,7 @@
         addTaskToDate(viewingDate, document.getElementById('fullTaskInput').value, selectedFullCategory); 
         document.getElementById('fullTaskInput').value = ''; 
     };
-    document.getElementById('resetDayBtn').onclick = () => resetDay(viewingDate);
     
-    // Navigation buttons
     document.getElementById('prevDayBtn').onclick = goToPrevDay;
     document.getElementById('nextDayBtn').onclick = goToNextDay;
     document.getElementById('goToTodayBtn').onclick = goToToday;
