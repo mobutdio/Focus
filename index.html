@@ -12,7 +12,7 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-        import { getFirestore, doc, onSnapshot, setDoc, updateDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyAgaBQgkXzUsP_shPCxHEPsfI0feV3XCmk",
@@ -36,8 +36,6 @@
         window.doc = doc;
         window.getDoc = getDoc;
         window.setDoc = setDoc;
-        window.updateDoc = updateDoc;
-        window.onSnapshot = onSnapshot;
     </script>
     
     <style>
@@ -86,6 +84,7 @@
         }
         .btn-danger:hover { background: rgba(239, 68, 68, 0.4); box-shadow: 0 0 15px rgba(239, 68, 68, 0.5); transform: scale(1.02); }
         
+        /* Day Navigation - Compact Style */
         .day-nav-compact {
             display: flex;
             align-items: center;
@@ -390,6 +389,7 @@
             margin: 0;
         }
         
+        /* Task Category Colors - Clean left border using pseudo-element (NO white lines) */
         .task-category-work { position: relative; background: rgba(59, 130, 246, 0.1); border-radius: 16px; overflow: hidden; }
         .task-category-work::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: #3b82f6; }
         .task-category-study { position: relative; background: rgba(16, 185, 129, 0.1); border-radius: 16px; overflow: hidden; }
@@ -563,7 +563,7 @@
                         <div class="category-pill" data-cat="personal">🎯 Personal</div>
                     </div>
                     <button id="addQuickTaskBtn" class="btn-secondary text-sm w-full mt-2">+ Add Task</button>
-                    <div class="auto-move-section"><p class="text-xs text-purple-300">⚡ Real-time sync across all devices</p></div>
+                    <div class="auto-move-section"><p class="text-xs text-purple-300">⏰ Tasks are saved per day automatically</p></div>
                     <div class="mt-4 space-y-2 max-h-64 overflow-y-auto" id="compactTaskList"></div>
                     <div class="mt-3 text-xs text-purple-400"><span id="taskProgress">0/0 completed</span>
                     <div class="w-full h-1 bg-purple-900/50 rounded-full mt-1"><div id="progressFill" class="h-full bg-purple-500 w-0 rounded-full"></div></div></div>
@@ -575,6 +575,7 @@
             <div class="card-sleek p-6">
                 <h2 class="text-2xl font-bold mb-4">🗂️ Task History</h2>
                 
+                <!-- Compact Day Navigation -->
                 <div class="day-nav-compact">
                     <button id="prevDayBtn" class="nav-arrow-compact">←</button>
                     <div class="current-day-compact">
@@ -610,7 +611,7 @@
 
 <script type="module">
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, doc, onSnapshot, setDoc, updateDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     
     const auth = getAuth(); const db = getFirestore();
     let currentUser = null, forest = [], coins = 0;
@@ -618,176 +619,50 @@
     let timerStartTime = null, timerBaseSeconds = 0;
     let currentWidget = "cactus", selectedQuickCategory = "", selectedFullCategory = "";
     let taskDonutChart = null, lineChart = null;
-    let isLocalUpdate = false; // لمنع التكرار
-    let dailyTasks = {};
-    let viewingDate = new Date().toISOString().split('T')[0];
     const ringCircumference = 2 * Math.PI * 118;
     const roastMessages = ["أنت فاشل", "يا خول", "كمل يلا", "يا جبان", "فرخة 🐔"];
     
-    // Unsubscribe functions
-    let unsubscribeTimer = null;
-    let unsubscribeTasks = null;
-    let unsubscribeForest = null;
-    let unsubscribeCoins = null;
+    // Daily Tasks Structure
+    let dailyTasks = {};
+    let viewingDate = new Date().toISOString().split('T')[0];
     
-    function getTodayDate() { return new Date().toISOString().split('T')[0]; }
-    function getDateString(date) { return date.toISOString().split('T')[0]; }
-    function getDayName(dateStr) { const date = new Date(dateStr); return date.toLocaleDateString('ar-EG', { weekday: 'long' }); }
-    function getShortDayName(dateStr) { const date = new Date(dateStr); return date.toLocaleDateString('ar-EG', { weekday: 'short' }); }
-    function getFormattedDate(dateStr) { const date = new Date(dateStr); return date.toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' }); }
-    
-    function initDailyTasks(dateStr) { if (!dailyTasks[dateStr]) { dailyTasks[dateStr] = { tasks: [], unfinished: [] }; } return dailyTasks[dateStr]; }
-    function getTodayTasks() { return initDailyTasks(getTodayDate()); }
-    function getTasksForDate(dateStr) { return initDailyTasks(dateStr); }
-    
-    // ========== REAL-TIME LISTENERS ==========
-    
-    function startRealtimeSync() {
-        if (!currentUser) return;
-        
-        const uid = currentUser.uid;
-        
-        // 1. Timer real-time
-        const timerRef = doc(db, "users", uid, "realtime", "timer");
-        if (unsubscribeTimer) unsubscribeTimer();
-        unsubscribeTimer = onSnapshot(timerRef, (docSnap) => {
-            if (isLocalUpdate) return;
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                // Only update if the data is newer
-                if (data.timerSeconds !== undefined && !isLocalUpdate) {
-                    const wasRunning = isRunning;
-                    timerSeconds = data.timerSeconds;
-                    timerTotal = data.timerTotal || timerTotal;
-                    isRunning = data.isRunning || false;
-                    if (data.startTime) timerStartTime = data.startTime;
-                    updateModernTimerUI();
-                    
-                    // If timer became running on another device, start local interval
-                    if (data.isRunning && !wasRunning && !timerInterval) {
-                        startLocalTimerInterval();
-                    } else if (!data.isRunning && wasRunning && timerInterval) {
-                        clearInterval(timerInterval);
-                        timerInterval = null;
-                    }
-                }
-            }
-        });
-        
-        // 2. Daily Tasks real-time
-        const tasksRef = doc(db, "users", uid, "data", "dailyTasks");
-        if (unsubscribeTasks) unsubscribeTasks();
-        unsubscribeTasks = onSnapshot(tasksRef, (docSnap) => {
-            if (isLocalUpdate) return;
-            if (docSnap.exists()) {
-                dailyTasks = docSnap.data().dailyTasks || {};
-                initDailyTasks(getTodayDate());
-                updateUI();
-            }
-        });
-        
-        // 3. Forest real-time
-        const forestRef = doc(db, "users", uid, "data", "forest");
-        if (unsubscribeForest) unsubscribeForest();
-        unsubscribeForest = onSnapshot(forestRef, (docSnap) => {
-            if (isLocalUpdate) return;
-            if (docSnap.exists()) {
-                forest = docSnap.data().forest || [];
-                updateUI();
-            }
-        });
-        
-        // 4. Coins real-time
-        const coinsRef = doc(db, "users", uid, "data", "coins");
-        if (unsubscribeCoins) unsubscribeCoins();
-        unsubscribeCoins = onSnapshot(coinsRef, (docSnap) => {
-            if (isLocalUpdate) return;
-            if (docSnap.exists()) {
-                coins = docSnap.data().coins || 0;
-                updateUI();
-            }
-        });
+    function getTodayDate() {
+        return new Date().toISOString().split('T')[0];
     }
     
-    function stopRealtimeSync() {
-        if (unsubscribeTimer) { unsubscribeTimer(); unsubscribeTimer = null; }
-        if (unsubscribeTasks) { unsubscribeTasks(); unsubscribeTasks = null; }
-        if (unsubscribeForest) { unsubscribeForest(); unsubscribeForest = null; }
-        if (unsubscribeCoins) { unsubscribeCoins(); unsubscribeCoins = null; }
-        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    function getDateString(date) {
+        return date.toISOString().split('T')[0];
     }
     
-    async function updateTimerInFirebase() {
-        if (!currentUser || isLocalUpdate) return;
-        isLocalUpdate = true;
-        try {
-            const timerRef = doc(db, "users", currentUser.uid, "realtime", "timer");
-            await setDoc(timerRef, {
-                timerSeconds: timerSeconds,
-                timerTotal: timerTotal,
-                isRunning: isRunning,
-                startTime: timerStartTime,
-                lastUpdated: serverTimestamp()
-            }, { merge: true });
-        } catch(e) { console.error("Timer sync error:", e); }
-        setTimeout(() => { isLocalUpdate = false; }, 100);
+    function getDayName(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('ar-EG', { weekday: 'long' });
     }
     
-    async function updateDailyTasksInFirebase() {
-        if (!currentUser || isLocalUpdate) return;
-        isLocalUpdate = true;
-        try {
-            const tasksRef = doc(db, "users", currentUser.uid, "data", "dailyTasks");
-            await setDoc(tasksRef, { dailyTasks }, { merge: true });
-        } catch(e) { console.error("Tasks sync error:", e); }
-        setTimeout(() => { isLocalUpdate = false; }, 100);
+    function getShortDayName(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('ar-EG', { weekday: 'short' });
     }
     
-    async function updateForestInFirebase() {
-        if (!currentUser || isLocalUpdate) return;
-        isLocalUpdate = true;
-        try {
-            const forestRef = doc(db, "users", currentUser.uid, "data", "forest");
-            await setDoc(forestRef, { forest }, { merge: true });
-        } catch(e) { console.error("Forest sync error:", e); }
-        setTimeout(() => { isLocalUpdate = false; }, 100);
+    function getFormattedDate(dateStr) {
+        const date = new Date(dateStr);
+        return date.toLocaleDateString('ar-EG', { day: 'numeric', month: 'short' });
     }
     
-    async function updateCoinsInFirebase() {
-        if (!currentUser || isLocalUpdate) return;
-        isLocalUpdate = true;
-        try {
-            const coinsRef = doc(db, "users", currentUser.uid, "data", "coins");
-            await setDoc(coinsRef, { coins }, { merge: true });
-        } catch(e) { console.error("Coins sync error:", e); }
-        setTimeout(() => { isLocalUpdate = false; }, 100);
+    function initDailyTasks(dateStr) {
+        if (!dailyTasks[dateStr]) {
+            dailyTasks[dateStr] = { tasks: [], unfinished: [] };
+        }
+        return dailyTasks[dateStr];
     }
     
-    function startLocalTimerInterval() {
-        if (timerInterval) clearInterval(timerInterval);
-        timerInterval = setInterval(() => {
-            if (!isRunning) return;
-            const now = Date.now();
-            if (timerStartTime) {
-                const elapsed = Math.floor((now - timerStartTime) / 1000);
-                const newSeconds = timerBaseSeconds + elapsed;
-                if (newSeconds !== timerSeconds && newSeconds <= timerTotal) {
-                    timerSeconds = newSeconds;
-                    updateModernTimerUI();
-                    updateTimerInFirebase();
-                    if (timerSeconds >= timerTotal) {
-                        completeSession();
-                    }
-                } else if (newSeconds >= timerTotal && timerSeconds < timerTotal) {
-                    timerSeconds = timerTotal;
-                    updateModernTimerUI();
-                    completeSession();
-                }
-            }
-        }, 200);
+    function getTodayTasks() {
+        return initDailyTasks(getTodayDate());
     }
     
-    // ========== TASK FUNCTIONS ==========
+    function getTasksForDate(dateStr) {
+        return initDailyTasks(dateStr);
+    }
     
     async function addTaskToDate(dateStr, text, category) {
         if (!text.trim()) return;
@@ -799,7 +674,8 @@
             category,
             createdAt: new Date().toISOString()
         });
-        await updateDailyTasksInFirebase();
+        await saveDailyTasks();
+        updateUI();
         showToast(dateStr === getTodayDate() ? 'Task added to today' : `Task added to ${getShortDayName(dateStr)}`);
     }
     
@@ -809,7 +685,8 @@
         if (task && task.completed !== checked) {
             task.completed = checked;
             task.completedAt = checked ? new Date().toISOString() : null;
-            await updateDailyTasksInFirebase();
+            await saveDailyTasks();
+            updateUI();
             if (checked) showToast('Task completed! +🪙');
         }
     }
@@ -817,13 +694,13 @@
     async function deleteTaskFromDay(dateStr, taskId) {
         const dayData = initDailyTasks(dateStr);
         dayData.tasks = dayData.tasks.filter(t => t.id !== taskId);
-        await updateDailyTasksInFirebase();
+        await saveDailyTasks();
+        updateUI();
         showToast('Task deleted');
     }
     
     async function moveUnfinishedTasks() {
         const today = getTodayDate();
-        let changed = false;
         for (const [dateStr, dayData] of Object.entries(dailyTasks)) {
             if (dateStr !== today) {
                 const moved = [];
@@ -836,110 +713,74 @@
                 });
                 if (moved.length > 0) {
                     dayData.unfinished.push(...moved.map(t => ({ ...t, movedAt: new Date().toISOString() })));
-                    changed = true;
                 }
             }
         }
-        if (changed) await updateDailyTasksInFirebase();
+        await saveDailyTasks();
+        updateUI();
     }
     
-    // ========== TIMER FUNCTIONS ==========
-    
-    function updateModernTimerUI() { 
-        let remain = timerTotal - timerSeconds; 
-        let mins = Math.floor(remain / 60), secs = remain % 60; 
-        document.getElementById('modernTimerDisplay').innerText = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`; 
-        let progress = timerSeconds / timerTotal; 
-        let offset = ringCircumference - (progress * ringCircumference); 
-        let ring = document.getElementById('timerRingModern'); 
-        if(ring) ring.style.strokeDashoffset = offset; 
-        if (timerTotal > 0) updateWidgets(progress); 
-        let statusSpan = document.getElementById('timerStatusModern'); 
-        if (progress >= 1 && timerSeconds > 0) statusSpan.innerHTML = '✓ Complete!'; 
-        else if (isRunning) statusSpan.innerHTML = '🌱 Growing...'; 
-        else statusSpan.innerHTML = timerSeconds > 0 ? '⏸ Paused' : '● Ready'; 
+    async function saveDailyTasks() {
+        if (!currentUser) return;
+        await setDoc(doc(db, "users", currentUser.uid, "data", "dailyTasks"), { dailyTasks });
     }
     
-    async function completeSession() { 
-        if (timerInterval) clearInterval(timerInterval); 
-        timerInterval = null;
-        isRunning = false; 
-        let mins = Math.floor(timerSeconds / 60); 
-        if (mins >= 1) { 
-            let earned = mins >= 60 ? 30 : mins >= 30 ? 20 : mins >= 15 ? 12 : mins >= 5 ? 5 : 2; 
-            forest.push({ id: Date.now(), type: currentWidget, duration: mins, date: new Date().toISOString() }); 
-            coins += earned; 
-            await updateForestInFirebase();
-            await updateCoinsInFirebase();
-            celebrate("Session Complete!", `+${earned} coins · ${mins} minutes`); 
-            updateUI(); 
-        } 
-        timerSeconds = 0; 
-        timerStartTime = null;
-        timerBaseSeconds = 0;
-        updateModernTimerUI(); 
-        await updateTimerInFirebase();
-        document.getElementById('startFocusBtn').classList.remove('hidden'); 
-        document.getElementById('pauseFocusBtn').classList.add('hidden'); 
-        document.getElementById('abortFocusBtn').classList.add('hidden'); 
+    async function loadDailyTasks(uid) {
+        const docRef = doc(db, "users", uid, "data", "dailyTasks");
+        const docSnap = await getDoc(docRef);
+        dailyTasks = docSnap.exists() ? docSnap.data().dailyTasks || {} : {};
+        initDailyTasks(getTodayDate());
     }
     
-    function startTimer() { 
-        if (isRunning || timerTotal === 0) return;
-        isRunning = true;
-        timerStartTime = Date.now();
-        timerBaseSeconds = timerSeconds;
-        updateTimerInFirebase();
-        addFlashEffect(document.getElementById('startFocusBtn'));
-        document.getElementById('startFocusBtn').classList.add('hidden'); 
-        document.getElementById('pauseFocusBtn').classList.remove('hidden'); 
-        document.getElementById('abortFocusBtn').classList.remove('hidden');
-        startLocalTimerInterval();
+    function addGlowEffect(button) {
+        if (!button) return;
+        button.classList.add('glow-effect');
+        setTimeout(() => button.classList.remove('glow-effect'), 600);
     }
     
-    function pauseTimer() { 
-        if (!isRunning) return; 
-        const now = Date.now();
-        const elapsedSinceStart = Math.floor((now - timerStartTime) / 1000);
-        timerSeconds = timerBaseSeconds + elapsedSinceStart;
-        if (timerSeconds > timerTotal) timerSeconds = timerTotal;
-        clearInterval(timerInterval);
-        timerInterval = null;
-        isRunning = false; 
-        updateModernTimerUI();
-        updateTimerInFirebase();
-        let btn = document.getElementById('pauseFocusBtn'); 
-        addGlowEffect(btn);
-        btn.innerHTML = '▶ Resume'; 
-        const newBtn = btn.cloneNode(true);
-        btn.parentNode.replaceChild(newBtn, btn);
-        const freshBtn = document.getElementById('pauseFocusBtn');
-        freshBtn.onclick = () => {
-            startTimer();
-            freshBtn.innerHTML = '⏸ Pause';
-            freshBtn.onclick = pauseTimer;
-        };
+    function addFlashEffect(button) {
+        if (!button) return;
+        button.classList.add('flash-effect');
+        setTimeout(() => button.classList.remove('flash-effect'), 400);
     }
     
-    function abortTimer() { 
-        let elapsedSeconds = timerSeconds; 
-        clearInterval(timerInterval);
-        timerInterval = null;
-        isRunning = false; 
-        addGlowEffect(document.getElementById('abortFocusBtn'));
-        if (elapsedSeconds > 15) showRoastPopup();
-        timerSeconds = 0; 
-        timerStartTime = null;
-        timerBaseSeconds = 0;
-        updateModernTimerUI(); 
-        updateTimerInFirebase();
-        document.getElementById('startFocusBtn').classList.remove('hidden'); 
-        document.getElementById('pauseFocusBtn').classList.add('hidden'); 
-        document.getElementById('abortFocusBtn').classList.add('hidden'); 
-        showToast('Session cancelled'); 
+    function getBadgeClass(category) {
+        switch(category) {
+            case 'work': return 'badge-work';
+            case 'study': return 'badge-study';
+            case 'health': return 'badge-health';
+            case 'personal': return 'badge-personal';
+            default: return '';
+        }
     }
     
-    // ========== UI RENDER FUNCTIONS ==========
+    function showRoastPopup() { 
+        const randomRoast = roastMessages[Math.floor(Math.random() * roastMessages.length)]; 
+        const popup = document.createElement('div'); 
+        popup.className = 'celebration-popup roast-popup'; 
+        popup.innerHTML = `<h3>${randomRoast}</h3><p>You gave up after more than 15 seconds</p>`; 
+        document.body.appendChild(popup); 
+        setTimeout(() => popup.remove(), 2800); 
+    }
+    
+    function showToast(msg) { let t = document.getElementById('toastMsg'); t.innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
+    function celebrate(title, msg) { let p = document.createElement('div'); p.className = 'celebration-popup'; p.innerHTML = `<div class="text-5xl mb-2">🎉</div><h3 class="text-xl font-bold text-yellow-300">${title}</h3><p class="text-purple-200">${msg}</p>`; document.body.appendChild(p); setTimeout(() => p.remove(), 2800); }
+    
+    async function saveData() { 
+        if (!currentUser) return; 
+        await setDoc(doc(db, "users", currentUser.uid, "data", "forest"), { forest }); 
+        await setDoc(doc(db, "users", currentUser.uid, "data", "coins"), { coins }); 
+        await saveDailyTasks();
+    }
+    
+    async function loadData(uid) { 
+        let f = await getDoc(doc(db, "users", uid, "data", "forest")); 
+        let c = await getDoc(doc(db, "users", uid, "data", "coins")); 
+        forest = f.exists() ? f.data().forest || [] : []; 
+        coins = c.exists() ? c.data().coins || 0 : 0; 
+        await loadDailyTasks(uid);
+        updateUI(); 
+    }
     
     function updateWidgets(progress) {
         let percent = progress * 100;
@@ -973,38 +814,89 @@
         }
     }
     
-    function switchWidget(widget) { 
-        currentWidget = widget; 
-        document.getElementById('coffeeWidget').style.display = widget === 'coffee' ? 'block' : 'none'; 
-        document.getElementById('bookshelfWidget').style.display = widget === 'bookshelf' ? 'block' : 'none'; 
-        document.getElementById('batteryWidget').style.display = widget === 'battery' ? 'block' : 'none'; 
-        document.getElementById('thermometerWidget').style.display = widget === 'thermometer' ? 'block' : 'none'; 
-        document.getElementById('catWidget').style.display = widget === 'cat' ? 'block' : 'none'; 
-        document.getElementById('cactusWidget').style.display = widget === 'cactus' ? 'block' : 'none'; 
-        updateWidgets(timerTotal > 0 ? timerSeconds / timerTotal : 0); 
+    function switchWidget(widget) { currentWidget = widget; document.getElementById('coffeeWidget').style.display = widget === 'coffee' ? 'block' : 'none'; document.getElementById('bookshelfWidget').style.display = widget === 'bookshelf' ? 'block' : 'none'; document.getElementById('batteryWidget').style.display = widget === 'battery' ? 'block' : 'none'; document.getElementById('thermometerWidget').style.display = widget === 'thermometer' ? 'block' : 'none'; document.getElementById('catWidget').style.display = widget === 'cat' ? 'block' : 'none'; document.getElementById('cactusWidget').style.display = widget === 'cactus' ? 'block' : 'none'; updateWidgets(timerTotal > 0 ? timerSeconds / timerTotal : 0); }
+    
+    function updateModernTimerUI() { let remain = timerTotal - timerSeconds; let mins = Math.floor(remain / 60), secs = remain % 60; document.getElementById('modernTimerDisplay').innerText = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`; let progress = timerSeconds / timerTotal; let offset = ringCircumference - (progress * ringCircumference); let ring = document.getElementById('timerRingModern'); if(ring) ring.style.strokeDashoffset = offset; if (timerTotal > 0) updateWidgets(progress); let statusSpan = document.getElementById('timerStatusModern'); if (progress >= 1 && timerSeconds > 0) statusSpan.innerHTML = '✓ Complete!'; else if (isRunning) statusSpan.innerHTML = '🌱 Growing...'; else statusSpan.innerHTML = timerSeconds > 0 ? '⏸ Paused' : '● Ready'; }
+    
+    async function completeSession() { 
+        if (timerInterval) clearInterval(timerInterval); 
+        isRunning = false; 
+        let mins = Math.floor(timerSeconds / 60); 
+        if (mins >= 1) { 
+            let earned = mins >= 60 ? 30 : mins >= 30 ? 20 : mins >= 15 ? 12 : mins >= 5 ? 5 : 2; 
+            forest.push({ id: Date.now(), type: currentWidget, duration: mins, date: new Date().toISOString() }); 
+            coins += earned; 
+            await saveData(); 
+            celebrate("Session Complete!", `+${earned} coins · ${mins} minutes`); 
+            updateUI(); 
+        } 
+        timerSeconds = 0; 
+        timerStartTime = null;
+        timerBaseSeconds = 0;
+        updateModernTimerUI(); 
+        document.getElementById('startFocusBtn').classList.remove('hidden'); 
+        document.getElementById('pauseFocusBtn').classList.add('hidden'); 
+        document.getElementById('abortFocusBtn').classList.add('hidden'); 
     }
     
-    function getBadgeClass(category) {
-        switch(category) {
-            case 'work': return 'badge-work';
-            case 'study': return 'badge-study';
-            case 'health': return 'badge-health';
-            case 'personal': return 'badge-personal';
-            default: return '';
-        }
+    function startTimer() { 
+        if (isRunning || timerTotal === 0) return;
+        isRunning = true;
+        timerStartTime = Date.now();
+        timerBaseSeconds = timerSeconds;
+        addFlashEffect(document.getElementById('startFocusBtn'));
+        document.getElementById('startFocusBtn').classList.add('hidden'); 
+        document.getElementById('pauseFocusBtn').classList.remove('hidden'); 
+        document.getElementById('abortFocusBtn').classList.remove('hidden');
+        if (timerInterval) clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+            if (!isRunning) return;
+            const now = Date.now();
+            const elapsed = Math.floor((now - timerStartTime) / 1000);
+            timerSeconds = timerBaseSeconds + elapsed;
+            if (timerSeconds > timerTotal) timerSeconds = timerTotal;
+            updateModernTimerUI();
+            if (timerSeconds >= timerTotal) completeSession();
+        }, 200);
     }
     
-    function showRoastPopup() { 
-        const randomRoast = roastMessages[Math.floor(Math.random() * roastMessages.length)]; 
-        const popup = document.createElement('div'); 
-        popup.className = 'celebration-popup roast-popup'; 
-        popup.innerHTML = `<h3>${randomRoast}</h3><p>You gave up after more than 15 seconds</p>`; 
-        document.body.appendChild(popup); 
-        setTimeout(() => popup.remove(), 2800); 
+    function pauseTimer() { 
+        if (!isRunning) return; 
+        const now = Date.now();
+        const elapsedSinceStart = Math.floor((now - timerStartTime) / 1000);
+        timerSeconds = timerBaseSeconds + elapsedSinceStart;
+        if (timerSeconds > timerTotal) timerSeconds = timerTotal;
+        clearInterval(timerInterval); 
+        isRunning = false; 
+        updateModernTimerUI();
+        let btn = document.getElementById('pauseFocusBtn'); 
+        addGlowEffect(btn);
+        btn.innerHTML = '▶ Resume'; 
+        const newBtn = btn.cloneNode(true);
+        btn.parentNode.replaceChild(newBtn, btn);
+        const freshBtn = document.getElementById('pauseFocusBtn');
+        freshBtn.onclick = () => {
+            startTimer();
+            freshBtn.innerHTML = '⏸ Pause';
+            freshBtn.onclick = pauseTimer;
+        };
     }
     
-    function showToast(msg) { let t = document.getElementById('toastMsg'); t.innerText = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500); }
-    function celebrate(title, msg) { let p = document.createElement('div'); p.className = 'celebration-popup'; p.innerHTML = `<div class="text-5xl mb-2">🎉</div><h3 class="text-xl font-bold text-yellow-300">${title}</h3><p class="text-purple-200">${msg}</p>`; document.body.appendChild(p); setTimeout(() => p.remove(), 2800); }
+    function abortTimer() { 
+        let elapsedSeconds = timerSeconds; 
+        clearInterval(timerInterval); 
+        isRunning = false; 
+        addGlowEffect(document.getElementById('abortFocusBtn'));
+        if (elapsedSeconds > 15) showRoastPopup();
+        timerSeconds = 0; 
+        timerStartTime = null;
+        timerBaseSeconds = 0;
+        updateModernTimerUI(); 
+        document.getElementById('startFocusBtn').classList.remove('hidden'); 
+        document.getElementById('pauseFocusBtn').classList.add('hidden'); 
+        document.getElementById('abortFocusBtn').classList.add('hidden'); 
+        showToast('Session cancelled'); 
+    }
     
     function getCategoryColor(category) {
         switch(category) {
@@ -1050,9 +942,13 @@
     
     function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m) { if(m === '&') return '&amp;'; if(m === '<') return '&lt;'; if(m === '>') return '&gt;'; return m; }); }
     
-    window.toggleTaskGlobal = async (dateStr, taskId, checked) => { await toggleTaskInDay(dateStr, taskId, checked); };
-    window.deleteTaskGlobal = async (dateStr, taskId) => { await deleteTaskFromDay(dateStr, taskId); };
-    window.deleteTree = async (id) => { forest = forest.filter(t => t.id !== id); await updateForestInFirebase(); showToast('Tree removed'); };
+    window.toggleTaskGlobal = async (dateStr, taskId, checked) => {
+        await toggleTaskInDay(dateStr, taskId, checked);
+    };
+    window.deleteTaskGlobal = async (dateStr, taskId) => {
+        await deleteTaskFromDay(dateStr, taskId);
+    };
+    window.deleteTree = async (id) => { forest = forest.filter(t => t.id !== id); await saveData(); updateUI(); showToast('Tree removed'); };
     
     function setupCategoryPills() { 
         document.querySelectorAll('#quickCategoryPills .category-pill').forEach(pill => { 
@@ -1196,11 +1092,6 @@
         showToast('Showing today\'s tasks');
     }
     
-    function addGlowEffect(button) { if (!button) return; button.classList.add('glow-effect'); setTimeout(() => button.classList.remove('glow-effect'), 600); }
-    function addFlashEffect(button) { if (!button) return; button.classList.add('flash-effect'); setTimeout(() => button.classList.remove('flash-effect'), 400); }
-    
-    // ========== INITIALIZATION ==========
-    
     const hoursInput = document.getElementById('hoursInputNew');
     const minsInput = document.getElementById('minutesInputNew');
     if (hoursInput && minsInput) {
@@ -1222,7 +1113,6 @@
             let hrs = parseInt(hoursInput.value)||0, mins = parseInt(minsInput.value)||0;
             if (hrs===0 && mins===0) { showToast('⏰ حدد وقت أكبر من 0'); return; }
             timerTotal = (hrs*60+mins)*60; timerSeconds = 0; updateModernTimerUI();
-            updateTimerInFirebase();
             addFlashEffect(document.getElementById('setTimerBtnNew'));
             showToast(`⏱ Timer set: ${hrs}h ${mins}m`);
         };
@@ -1304,7 +1194,6 @@
     document.getElementById('showLoginBtn').onclick = ()=>{ document.getElementById('signupFields').style.display='none'; document.getElementById('loginFields').style.display='block'; };
     document.getElementById('logoutBtn').onclick = async()=>{ 
         addFlashEffect(document.getElementById('logoutBtn'));
-        stopRealtimeSync();
         await signOut(auth); 
     };
     
@@ -1315,14 +1204,13 @@
     onAuthStateChanged(auth, async(user)=>{ 
         if(user){ 
             currentUser=user; 
-            stopRealtimeSync();
-            startRealtimeSync();
-            viewingDate = getTodayDate();
-            updateUI(); 
+            await loadData(user.uid); 
             document.getElementById('authOverlay').style.display='none'; 
             document.getElementById('mainApp').style.display='block'; 
+            moveUnfinishedTasks();
+            viewingDate = getTodayDate();
+            updateUI(); 
         } else { 
-            stopRealtimeSync();
             document.getElementById('authOverlay').style.display='flex'; 
             document.getElementById('mainApp').style.display='none'; 
         } 
